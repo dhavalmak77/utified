@@ -1,6 +1,7 @@
 import '@mantine/core/styles.css';
 
 import { ColorSchemeScript, MantineProvider, mantineHtmlProps } from '@mantine/core';
+import { AppLayout } from './_components/layout';
 
 export const metadata = {
 	title: 'Utified – Developer Utility Toolkit',
@@ -14,7 +15,9 @@ export default function RootLayout({ children }) {
 				<ColorSchemeScript />
 			</head>
 			<body>
-				<MantineProvider>{children}</MantineProvider>
+				<MantineProvider>
+					<AppLayout>{children}</AppLayout>
+				</MantineProvider>
 			</body>
 		</html>
 	);
