@@ -6,8 +6,9 @@ import AppHeader from './header';
 import AppSiderLeft from './sidebar-left';
 import AppRightSider from './sidebar-right';
 import AppFooter from './footer';
+import AppBreadcrumbs from './breadcrumbs';
 
-export function AppLayout({ children }) {
+export const AppLayout = ({ children }) => {
 	const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
 	const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
 
@@ -19,7 +20,7 @@ export function AppLayout({ children }) {
 				breakpoint: 'sm',
 				collapsed: { mobile: !mobileOpened, desktop: !desktopOpened },
 			}}
-            // aside={{
+			// aside={{
 			//     width: 300,
 			//     breakpoint: 'md',
 			//     collapsed: { desktop: false, mobile: true }
@@ -39,13 +40,15 @@ export function AppLayout({ children }) {
 			<AppSiderLeft />
 
 			{/* Main Content */}
-			<AppShell.Main>{children}</AppShell.Main>
+			<AppShell.Main p={0}>
+				{children}
+			</AppShell.Main>
 
 			{/* Right Sidebar */}
-            <AppRightSider />
+			<AppRightSider />
 
 			{/* Footer */}
-            <AppFooter />
+			<AppFooter />
 		</AppShell>
 	);
 }

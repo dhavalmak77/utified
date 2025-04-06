@@ -13,18 +13,24 @@
 		"@mantine/form": "^7.17.3",
 		"@mantine/hooks": "^7.17.3",
 		"@mantinex/mantine-logo": "^1.1.0",
+		"clsx": "^2.1.1",
 		"next": "15.2.4",
 		"react": "^19.0.0",
-		"react-dom": "^19.0.0"
+		"react-dom": "^19.0.0",
+		"react-icons": "^5.5.0",
+		"sass": "^1.86.3",
+		"tailwind-merge": "^3.1.0",
+		"tailwind-scrollbar": "^4.0.2"
 	},
 	"devDependencies": {
 		"@eslint/eslintrc": "^3",
 		"@tailwindcss/postcss": "^4",
+		"autoprefixer": "^10.4.21",
 		"eslint": "^9",
 		"eslint-config-next": "15.2.4",
 		"postcss": "^8.5.3",
 		"postcss-preset-mantine": "^1.17.0",
 		"postcss-simple-vars": "^7.0.1",
-		"tailwindcss": "^4"
+		"tailwindcss": "^4.1.3"
 	}
 }
