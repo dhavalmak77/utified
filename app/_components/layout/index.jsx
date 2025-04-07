@@ -6,11 +6,15 @@ import AppHeader from './header';
 import AppSiderLeft from './sidebar-left';
 import AppRightSider from './sidebar-right';
 import AppFooter from './footer';
-import AppBreadcrumbs from './breadcrumbs';
+import { usePathname } from 'next/navigation';
+import { AppContentArea } from './content-area';
 
 export const AppLayout = ({ children }) => {
 	const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
 	const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
+
+	const path = usePathname();
+	// const breadcrumbItems = breadcrumbPath(HEADER_NAVIGATION, path);
 
 	return (
 		<AppShell
@@ -39,9 +43,8 @@ export const AppLayout = ({ children }) => {
 			<AppSiderLeft />
 
 			{/* Main Content */}
-			<AppShell.Main>
-				{children}
-			</AppShell.Main>
+			{/* <AppContentArea children={children} /> */}
+			{children}
 
 			{/* Right Sidebar */}
 			<AppRightSider />

@@ -6,7 +6,7 @@ export const PageTitle = ({ children, title }) => {
 			order={1}
 			textWrap="wrap"
 			size="h1"
-			mt="md"
+			mt="xs"
 		>
 			{children || title}
 		</Title>

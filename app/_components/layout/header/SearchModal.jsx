@@ -156,6 +156,7 @@ export const SearchModal = ({ isOpen, setIsOpen }) => {
 							color='blue.9'
 							c='white'
 							px={6}
+							py={4}
 						>
 							<LuArrowUp size={14} />
 						</Code>
@@ -163,6 +164,7 @@ export const SearchModal = ({ isOpen, setIsOpen }) => {
 							color='blue.9'
 							c='white'
 							px={6}
+							py={4}
 						>
 							<LuArrowDown size={14} />
 						</Code>

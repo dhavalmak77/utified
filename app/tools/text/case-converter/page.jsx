@@ -1,16 +1,13 @@
 'use client';
 
-import { PageDescription } from '@/app/_components/PageDescription';
-import { PageTitle } from '@/app/_components/PageTitle';
-import { CommonCard } from '../_components/card';
 import { ActionIcon, Button, FileButton, Group, Text, Textarea, Tooltip } from '@mantine/core';
 import { convertTextCase, textTranformations } from './convert-utils';
-import cn from '../_lib/utils/cn';
+import cn from '@/app/_lib/utils/cn';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { LuCopy, LuClipboardCopy, LuUpload, LuX, LuCopyCheck, LuDownload, LuEraser } from 'react-icons/lu';
 
 import { useHover } from '@mantine/hooks';
-import { PageWrapper } from '../_components/layout/page-wrapper';
+import { PageWrapper } from '@/app/_components/layout/page-wrapper';
 
 const caseButtons = Object.entries(textTranformations).map(([key, el]) => ({ label: el.label, value: key }));
 const isCopiedInitial = { status: false, error: false, toggle: false };
