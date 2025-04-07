@@ -45,7 +45,6 @@ export const SearchModal = ({ isOpen, setIsOpen }) => {
 					justify='center'
 					align='center'
 					flex={1}
-					flexColumn
 				>
 					<Badge
 						color='violet'
