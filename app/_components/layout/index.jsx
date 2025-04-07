@@ -26,7 +26,6 @@ export const AppLayout = ({ children }) => {
 			//     collapsed: { desktop: false, mobile: true }
 			// }}
 			footer={{ height: 60 }}
-			padding="md"
 		>
 			{/* Header */}
 			<AppHeader
@@ -40,7 +39,7 @@ export const AppLayout = ({ children }) => {
 			<AppSiderLeft />
 
 			{/* Main Content */}
-			<AppShell.Main p={0}>
+			<AppShell.Main>
 				{children}
 			</AppShell.Main>
 
