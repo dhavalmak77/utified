@@ -67,7 +67,7 @@ export const SIDER_NAVIGATION = [
 						key: 'text-counter',
 						href: '/tools/text/text-counter',
 						leftSection: <TbTextRecognition size={18} />,
-					}
+					},
 				],
 			},
 		],

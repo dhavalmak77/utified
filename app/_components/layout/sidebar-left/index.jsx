@@ -273,6 +273,7 @@
 import { AppShell, Badge, NavLink, Text, Divider, ScrollArea, Box } from '@mantine/core';
 import { TbHome2, TbGauge, TbChevronRight, TbActivity, TbCircleOff, TbFingerprint, TbTools, TbLock } from 'react-icons/tb';
 import { SIDER_NAVIGATION } from './SidebarNavigation';
+import Link from 'next/link';
 
 const AppSiderLeft = () => {
 	return (
@@ -318,10 +319,11 @@ const AppSiderLeft = () => {
 							if (hasNestedChildren) {
 								return (
 									<NavLink
+										component={Link}
 										key={link.key}
 										label={link.label}
 										description={link.description}
-										href={link.href}
+										href={link.href ?? '#'}
 										leftSection={link.leftSection}
 										rightSection={link.rightSection}
 										childrenOffset={link.childrenOffset ?? 24}
@@ -336,10 +338,11 @@ const AppSiderLeft = () => {
 										>
 											{link.children.map((child) => (
 												<NavLink
+													component={Link}
 													key={child.key}
 													label={child.label}
 													description={child.description}
-													href={child.href}
+													href={child.href ?? '#'}
 													leftSection={child.leftSection}
 													rightSection={child.rightSection}
 													disabled={child.disabled || child.isDisabled}
@@ -353,10 +356,11 @@ const AppSiderLeft = () => {
 								
 							return (
 								<NavLink
+									component={Link}
 									key={link.key}
 									label={link.label}
 									description={link.description}
-									href={link.href}
+									href={link.href ?? '#'}
 									leftSection={link.leftSection}
 									rightSection={link.rightSection}
 									disabled={link.disabled || link.isDisabled}
