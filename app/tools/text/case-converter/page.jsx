@@ -12,7 +12,7 @@ import { PageWrapper } from '@/app/_components/layout/page-wrapper';
 const caseButtons = Object.entries(textTranformations).map(([key, el]) => ({ label: el.label, value: key }));
 const isCopiedInitial = { status: false, error: false, toggle: false };
 
-export default function Home() {
+export default function TextCaseConverter() {
 	const [text, setText] = useState('');
 	const [result, setResult] = useState('');
 	const [caseType, setCaseType] = useState('');
@@ -105,6 +105,11 @@ export default function Home() {
 		<PageWrapper
 			title='Text Case Converter'
 			description='Convert text into various cases with ease.'
+			aside={<Text
+				fw={500}
+				size='sm'
+				mb='xs'
+			></Text>}
 		>
 			{/* Common Card */}
 			<div className='h-auto w-full bg-slate-100 border border-[#ced4da] flex rounded-md divide-x divide-[#ced4da]'>

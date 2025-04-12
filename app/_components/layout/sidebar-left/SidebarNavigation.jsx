@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { TbArrowNarrowRight, TbBrandOpenSource, TbChevronRight, TbFingerprint, TbGauge, TbHome2, TbInfoCircle, TbLayoutDashboard, TbLetterCase, TbMail, TbTextRecognition, TbTools, TbTypography } from 'react-icons/tb';
+import { TbArrowNarrowRight, TbBrandOpenSource, TbChevronRight, TbFingerprint, TbGauge, TbHome2, TbInfoCircle, TbKey, TbLayoutDashboard, TbLetterCase, TbMail, TbPassword, TbShieldLock, TbTextRecognition, TbTools, TbTypography, TbUserCheck } from 'react-icons/tb';
 
 const createLink = (href, label) => ({
 	label: <Link href={href}>{label}</Link>,
@@ -42,8 +42,8 @@ export const SIDER_NAVIGATION = [
 		isSection: true,
 		children: [
 			{
-				label: 'Text',
-				key: 'text-tools',
+				label: 'Text Utilities',
+				key: 'text-utilities',
 				isSection: true,
 				// disabled: true,
 				leftSection: <TbTypography size={18} />,
@@ -67,6 +67,26 @@ export const SIDER_NAVIGATION = [
 						key: 'text-counter',
 						href: '/tools/text/text-counter',
 						leftSection: <TbTextRecognition size={18} />,
+					},
+				],
+			},
+			{
+				label: 'Security Tools',
+				key: 'security-tools',
+				href: '#',
+				leftSection: <TbShieldLock size={18} />,
+				children: [
+					{
+						label: 'Password Generator',
+						key: 'password-generator',
+						href: '/tools/security/password-generator',
+						leftSection: <TbKey size={18} />,
+					},
+					{
+						label: 'Memorable Password Generator',
+						key: 'memorable-password-generator',
+						href: '/tools/security/memorable-password-generator',
+						leftSection: <TbUserCheck size={18} />,
 					},
 				],
 			},

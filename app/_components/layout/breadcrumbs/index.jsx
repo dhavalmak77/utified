@@ -60,8 +60,9 @@ export default function AppBreadcrumbs() {
 				// color='blue'
 				// opacity={item?.href ? 1 : 0.8}
 			>
-				{item?.href && <BlueLink>{item.label}</BlueLink>}
-				{!item?.href && item.label}
+				{item.label}
+				{/* {item?.href && <BlueLink>{item.label}</BlueLink>}
+				{!item?.href && item.label} */}
 			</Format>
 		);
 	})

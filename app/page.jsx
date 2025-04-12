@@ -155,9 +155,6 @@ export default function HomePage() {
 						</form>
 					</div>
 				</section>
-
-				{/* Footer */}
-				<footer className='py-6 text-center text-sm text-gray-500 border-t border-zinc-800'>© {new Date().getFullYear()} Web Dev Tools · Built with ❤️ & TypeScript</footer>
 			</div>
 		</PageWrapper>
 	);

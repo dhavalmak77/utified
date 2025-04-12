@@ -5,7 +5,6 @@ import { useDisclosure } from '@mantine/hooks';
 import AppHeader from './header';
 import AppSiderLeft from './sidebar-left';
 import AppRightSider from './sidebar-right';
-import AppFooter from './footer';
 import { usePathname } from 'next/navigation';
 import { AppContentArea } from './content-area';
 
@@ -29,7 +28,7 @@ export const AppLayout = ({ children }) => {
 			//     breakpoint: 'md',
 			//     collapsed: { desktop: false, mobile: true }
 			// }}
-			footer={{ height: 60 }}
+			// footer={{ height: 60 }}
 		>
 			{/* Header */}
 			<AppHeader
@@ -47,10 +46,7 @@ export const AppLayout = ({ children }) => {
 			{children}
 
 			{/* Right Sidebar */}
-			<AppRightSider />
-
-			{/* Footer */}
-			<AppFooter />
+			{/* <AppRightSider /> */}
 		</AppShell>
 	);
 }

@@ -1,7 +1,7 @@
 import { AppShell } from '@mantine/core';
 
 const AppSiderRight = () => {
-	return null;
+	// return null;
 
 	return (
 		<AppShell.Aside p="md">Aside</AppShell.Aside>
