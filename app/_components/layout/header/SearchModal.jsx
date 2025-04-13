@@ -3,6 +3,13 @@ import { TbSearch } from 'react-icons/tb';
 import { LuArrowDown, LuArrowUp, LuX } from 'react-icons/lu';
 import { useState } from 'react';
 import { Code } from '@mantine/core';
+import { searchPrompts } from './searchPrompts';
+
+function decodeHtmlEntities(text) {
+	const parser = new DOMParser();
+	const decodedString = parser.parseFromString(text, 'text/html').body.textContent;
+	return decodedString;
+}
 
 export const SearchModal = ({ isOpen, setIsOpen }) => {
 	const [search, setSearch] = useState('');
@@ -46,7 +53,7 @@ export const SearchModal = ({ isOpen, setIsOpen }) => {
 					align='center'
 					flex={1}
 				>
-					<Badge
+					{/* <Badge
 						color='violet'
 						variant='light'
 						radius='sm'
@@ -55,7 +62,8 @@ export const SearchModal = ({ isOpen, setIsOpen }) => {
 						leftSection={<TbSearch size={14} />}
 					>
 						Search something!
-					</Badge>
+					</Badge> */}
+					{isOpen && decodeHtmlEntities(searchPrompts[Math.floor(Math.random() * searchPrompts.length)])}
 				</Group>
 				<Divider />
 				{/* <Group
