@@ -306,7 +306,7 @@ export default function Base64() {
 							}
 						/>
 						{showQRCode.includes(ENCODE) && qrValues[ENCODE] && (
-							<div className='border-t border-r border-b border-[#d9d9d9] rounded-tr-md rounded-br-md p-1.5'>
+							<div className='border-t border-r border-b border-[var(--app-shell-border-color)] rounded-tr-md rounded-br-md p-1.5'>
 								<QRCodeSVG
 									size={126}
 									value={qrValues[ENCODE].slice(0, 1000)}
@@ -481,7 +481,7 @@ export default function Base64() {
 								}
 							/>
 							{showQRCode.includes(DECODE) && qrValues[DECODE].length && (
-								<div className='border-t border-r border-b border-[#d9d9d9] rounded-tr-md rounded-br-md p-1.5'>
+								<div className='border-t border-r border-b border-[var(--app-shell-border-color)] rounded-tr-md rounded-br-md p-1.5'>
 									<QRCodeSVG
 										size={126}
 										value={qrValues[DECODE].slice(0, 1000)}
