@@ -10,7 +10,7 @@ export const SearchBar = ({ onFocus }) => {
 	// Focus input on Ctrl+K or Cmd+K
 	useEffect(() => {
 		const handleKeyDown = (event) => {
-			if (event.ctrlKey && event.key.toLowerCase() === 'b') {
+			if (event.ctrlKey && event.key.toLowerCase() === 'K') {
 				event.preventDefault(); // prevent browser default (like bold in editors)
 				inputRef.current?.focus();
 			}
