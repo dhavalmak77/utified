@@ -511,22 +511,6 @@ export default function Md4() {
 							spacing={0}
 							gap={10}
 						>
-							<FileButton
-								onChange={(e) => handleFileUpload(HASH, e)}
-								accept='image/png,image/jpeg'
-							>
-								{(props) => (
-									<Button
-										variant={hoveredUploadFile2 ? 'filled' : 'default'}
-										leftSection={<LuUpload />}
-										ref={refUploadFile2}
-										{...props}
-									>
-										Upload File
-									</Button>
-								)}
-							</FileButton>
-
 							<Tooltip
 								label={showQRCode.includes(HASH) ? 'QR Code is active' : 'QR Code'}
 								withArrow
