@@ -154,6 +154,12 @@ export const SIDER_NAVIGATION = [
 						leftSection: <TbHash size={18} />,
 					},
 					{
+						label: 'MD4 Hash Generator',
+						key: 'md4-hash-generator',
+						href: '/tools/hash-generators/md4',
+						leftSection: <TbHash size={18} />,
+					},
+					{
 						label: 'MD5 Hash Generator',
 						key: 'md5-hash-generator',
 						href: '/tools/hash-generators/md5',
