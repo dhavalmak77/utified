@@ -480,7 +480,7 @@ export default function Base64() {
 									)
 								}
 							/>
-							{showQRCode.includes(DECODE) && qrValues[DECODE].length && (
+							{showQRCode.includes(DECODE) && qrValues[DECODE] && (
 								<div className='border-t border-r border-b border-[#d9d9d9] rounded-tr-md rounded-br-md p-1.5'>
 									<QRCodeSVG
 										size={126}
