@@ -24,8 +24,6 @@ const DECODE = 'DECODE';
 
 const maxQrCodeLength = 2953;
 
-console.log(CHARSET_OPTIONS);
-
 export default function Base64() {
 	const theme = useMantineTheme();
 
