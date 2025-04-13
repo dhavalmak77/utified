@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { TbArrowNarrowRight, TbBrandOpenSource, TbChevronRight, TbFingerprint, TbGauge, TbHome2, TbInfoCircle, TbKey, TbLayoutDashboard, TbLetterCase, TbMail, TbPassword, TbShieldLock, TbTextRecognition, TbTools, TbTypography, TbUserCheck } from 'react-icons/tb';
+import { TbArrowNarrowRight, TbBracketsAngle, TbBrandOpenSource, TbChevronRight, TbCode, TbCodeDots, TbFileCode, TbFileSpreadsheet, TbFingerprint, TbGauge, TbHash, TbHome2, TbInfoCircle, TbKey, TbLayoutDashboard, TbLetterCase, TbLink, TbMail, TbPassword, TbShieldLock, TbTextRecognition, TbTools, TbTransform, TbTypography, TbUserCheck } from 'react-icons/tb';
 
 const createLink = (href, label) => ({
 	label: <Link href={href}>{label}</Link>,
@@ -41,13 +41,12 @@ export const SIDER_NAVIGATION = [
 		key: 'section-tools',
 		isSection: true,
 		children: [
+			// 🔠 TEXT UTILITIES
 			{
 				label: 'Text Utilities',
 				key: 'text-utilities',
 				isSection: true,
-				// disabled: true,
 				leftSection: <TbTypography size={18} />,
-				// childrenOffset: 14,
 				description: 'Text formatting tools',
 				children: [
 					{
@@ -70,10 +69,12 @@ export const SIDER_NAVIGATION = [
 					},
 				],
 			},
+
+			// 🔐 SECURITY TOOLS
 			{
 				label: 'Security Tools',
 				key: 'security-tools',
-				href: '#',
+				isSection: true,
 				leftSection: <TbShieldLock size={18} />,
 				children: [
 					{
@@ -87,6 +88,82 @@ export const SIDER_NAVIGATION = [
 						key: 'memorable-password-generator',
 						href: '/tools/security/memorable-password-generator',
 						leftSection: <TbUserCheck size={18} />,
+					},
+				],
+			},
+
+			// 🔁 CONVERTERS
+			{
+				label: 'Converters',
+				key: 'converters-tools',
+				isSection: true,
+				leftSection: <TbTransform size={18} />,
+				description: 'Format conversion tools',
+				children: [
+					{
+						label: 'Base64 Encoder/Decoder',
+						key: 'base64',
+						href: '/tools/converter/base64',
+						leftSection: <TbCode size={18} />,
+					},
+					{
+						label: 'HTML Entity Encoder/Decoder',
+						key: 'html-entity-encoder-decoder',
+						href: '/tools/converter/html-entity-encoder-decoder',
+						leftSection: <TbCodeDots size={18} />,
+					},
+					{
+						label: 'URL Encoder/Decoder',
+						key: 'url-encoder-decoder',
+						href: '/tools/converter/url-encoder-decoder',
+						leftSection: <TbLink size={18} />,
+					},
+					{
+						label: 'JSON ↔ Object Converter',
+						key: 'json-object-converter',
+						href: '/tools/converter/json-object-converter',
+						leftSection: <TbBracketsAngle size={18} />,
+					},
+					{
+						label: 'CSV ↔ JSON Converter',
+						key: 'csv-json-converter',
+						href: '/tools/converter/csv-json-converter',
+						leftSection: <TbFileSpreadsheet size={18} />,
+					},
+					{
+						label: 'XML ↔ JSON Converter',
+						key: 'xml-json-converter',
+						href: '/tools/converter/xml-json-converter',
+						leftSection: <TbFileCode size={18} />,
+					}		
+				],
+			},
+
+			// 🔒 HASHING TOOLS
+			{
+				label: 'Hashing Tools',
+				key: 'hashing-tools',
+				isSection: true,
+				leftSection: <TbFingerprint size={18} />,
+				description: 'Generate one-way cryptographic hashes',
+				children: [
+					{
+						label: 'MD5 Hash Generator',
+						key: 'md5-hash-generator',
+						href: '/tools/hashing/md5',
+						leftSection: <TbHash size={18} />,
+					},
+					{
+						label: 'SHA1 Hash Generator',
+						key: 'sha1-hash-generator',
+						href: '/tools/hashing/sha1',
+						leftSection: <TbHash size={18} />,
+					},
+					{
+						label: 'SHA256 Hash Generator',
+						key: 'sha256-hash-generator',
+						href: '/tools/hashing/sha256',
+						leftSection: <TbHash size={18} />,
 					},
 				],
 			},
