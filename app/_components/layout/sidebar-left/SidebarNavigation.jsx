@@ -148,21 +148,27 @@ export const SIDER_NAVIGATION = [
 				description: 'Generate one-way cryptographic hashes',
 				children: [
 					{
+						label: 'MD2 Hash Generator',
+						key: 'md2-hash-generator',
+						href: '/tools/hash-generators/md2',
+						leftSection: <TbHash size={18} />,
+					},
+					{
 						label: 'MD5 Hash Generator',
 						key: 'md5-hash-generator',
-						href: '/tools/hashing/md5',
+						href: '/tools/hash-generators/md5',
 						leftSection: <TbHash size={18} />,
 					},
 					{
 						label: 'SHA1 Hash Generator',
 						key: 'sha1-hash-generator',
-						href: '/tools/hashing/sha1',
+						href: '/tools/hash-generators/sha1',
 						leftSection: <TbHash size={18} />,
 					},
 					{
 						label: 'SHA256 Hash Generator',
 						key: 'sha256-hash-generator',
-						href: '/tools/hashing/sha256',
+						href: '/tools/hash-generators/sha256',
 						leftSection: <TbHash size={18} />,
 					},
 				],

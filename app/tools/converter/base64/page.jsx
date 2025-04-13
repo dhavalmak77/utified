@@ -38,15 +38,15 @@ export default function Base64() {
 	const [autoSync, setAutoSync] = useState({ [ENCODE]: false, [DECODE]: false });
 
 	const { hovered: hoveredTakeOutputAsInput, ref: refTakeOutputAsInput } = useHover();
-		const { hovered: hoveredUploadFile1, ref: refUploadFile1 } = useHover();
-		const { hovered: hoveredUploadFile2, ref: refUploadFile2 } = useHover();
-		const { hovered: hoveredCopy1, ref: refCopy1 } = useHover();
-		const { hovered: hoveredCopy2, ref: refCopy2 } = useHover();
-		const { hovered: hoveredQr1, ref: refQr1 } = useHover();
-		const { hovered: hoveredQr2, ref: refQr2 } = useHover();
-		const { hovered: hoveredDownload1, ref: refDownload1 } = useHover();
-		const { hovered: hoveredDownload2, ref: refDownload2 } = useHover();
-		const { hovered: hoveredClearBoth, ref: refClearBoth } = useHover();
+	const { hovered: hoveredUploadFile1, ref: refUploadFile1 } = useHover();
+	const { hovered: hoveredUploadFile2, ref: refUploadFile2 } = useHover();
+	const { hovered: hoveredCopy1, ref: refCopy1 } = useHover();
+	const { hovered: hoveredCopy2, ref: refCopy2 } = useHover();
+	const { hovered: hoveredQr1, ref: refQr1 } = useHover();
+	const { hovered: hoveredQr2, ref: refQr2 } = useHover();
+	const { hovered: hoveredDownload1, ref: refDownload1 } = useHover();
+	const { hovered: hoveredDownload2, ref: refDownload2 } = useHover();
+	const { hovered: hoveredClearBoth, ref: refClearBoth } = useHover();
 
 	useEffect(() => {
 		if (copyStatus.hasError || copyStatus.isSuccess) {
