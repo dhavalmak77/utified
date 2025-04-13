@@ -8,7 +8,7 @@ import { useHover } from "@mantine/hooks";
 import { QRCodeSVG } from "qrcode.react";
 import { useCallback, useEffect, useState } from "react";
 import { LuCopy, LuCopyCheck, LuDownload, LuEraser, LuUpload, LuX } from "react-icons/lu";
-import { TbCircleCheck, TbCopy, TbCopyCheck, TbDownload, TbQrcode, TbQrcodeOff, TbSettings, TbSettingsCheck, TbSettingsFilled } from "react-icons/tb";
+import { TbCircleCheck, TbCopy, TbCopyCheck, TbDownload, TbQrcode, TbQrcodeOff, TbSettings, TbSettingsMinus, TbSettingsFilled, TbSettingsPlus } from "react-icons/tb";
 import { CHARSET_OPTIONS } from "./charsets";
 import { base64Conversions } from './charset-conversions';
 
@@ -348,7 +348,7 @@ export default function Base64() {
 									c={settings.includes(ENCODE) ? 'blue' : ''}
 									p={10}
 								>
-									{settings.includes(ENCODE) ? <TbSettingsCheck size={16} /> : <TbSettings size={16} />}
+									{settings.includes(ENCODE) ? <TbSettingsMinus size={16} /> : <TbSettingsPlus size={16} />}
 								</Button>
 							</Tooltip>
 							<Tooltip label={copyStatus.type !== ENCODE ? 'Copy' : copyStatus.isSuccess ? 'Copied' : copyStatus.hasError ? 'Error copying' : 'Copy'}>
@@ -524,7 +524,7 @@ export default function Base64() {
 									c={settings.includes(DECODE) ? 'blue' : ''}
 									p={10}
 								>
-									{settings.includes(DECODE) ? <TbSettingsCheck size={16} /> : <TbSettings size={16} />}
+									{settings.includes(DECODE) ? <TbSettingsMinus size={16} /> : <TbSettingsPlus size={16} />}
 								</Button>
 							</Tooltip>
 							<Tooltip label={copyStatus.type !== DECODE ? 'Copy' : copyStatus.isSuccess ? 'Copied' : copyStatus.hasError ? 'Error copying' : 'Copy'}>
