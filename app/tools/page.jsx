@@ -5,6 +5,7 @@ import { Badge, Card, Grid, Group, Input, Tabs, Text, Title } from '@mantine/cor
 import { TbSearch, TbJson, TbPasswordFingerprint, TbFileTypeCsv } from 'react-icons/tb';
 import { useDebouncedValue } from '@mantine/hooks';
 import Link from 'next/link';
+import { PageWrapper } from '../_components/layout/page-wrapper';
 
 const toolData = [
 	{
@@ -74,57 +75,62 @@ const ToolsPage = () => {
 	});
 
 	return (
-		<div className='pt-4'>
-			<Title
-				order={2}
-				mb={4}
-			>
-				Developer Tools
-			</Title>
-			<Text
-				c='dimmed'
-				mb='lg'
-			>
-				Handy utilities for web developers — formatters, converters, encoders, and more.
-			</Text>
-
-			<Group
-				justify='space-between'
-				mb='md'
-				wrap='wrap'
-			>
-				<Tabs
-					value={activeTab}
-					onChange={setActiveTab}
+		<PageWrapper
+			title='Developer Tools'
+			description='Handy utilities for web developers — formatters, converters, encoders, and more.'
+		>
+			<div className=''>
+				{/* <Title
+					order={2}
+					mb={4}
 				>
-					<Tabs.List>
-						<Tabs.Tab value='all'>All</Tabs.Tab>
-						<Tabs.Tab value='JSON'>JSON</Tabs.Tab>
-						<Tabs.Tab value='Security'>Security</Tabs.Tab>
-						<Tabs.Tab value='Data'>Data</Tabs.Tab>
-					</Tabs.List>
-				</Tabs>
+					Developer Tools
+				</Title>
+				<Text
+					c='dimmed'
+					mb='lg'
+				>
+					Handy utilities for web developers — formatters, converters, encoders, and more.
+				</Text> */}
 
-				<Input
-					placeholder='Search tools...'
-					leftSection={<TbSearch size={16} />}
-					value={search}
-					onChange={(event) => setSearch(event.currentTarget.value)}
-					className='w-full sm:w-[250px]'
-				/>
-			</Group>
-
-			<Grid>
-				{filteredTools.map((tool, index) => (
-					<Grid.Col
-						key={index}
-						span={{ base: 12, sm: 6, md: 4 }}
+				<Group
+					justify='space-between'
+					mb='md'
+					wrap='wrap'
+				>
+					<Tabs
+						value={activeTab}
+						onChange={setActiveTab}
 					>
-						<ToolCard {...tool} />
-					</Grid.Col>
-				))}
-			</Grid>
-		</div>
+						<Tabs.List>
+							<Tabs.Tab value='all'>All</Tabs.Tab>
+							<Tabs.Tab value='JSON'>JSON</Tabs.Tab>
+							<Tabs.Tab value='Security'>Security</Tabs.Tab>
+							<Tabs.Tab value='Data'>Data</Tabs.Tab>
+						</Tabs.List>
+					</Tabs>
+
+					<Input
+						placeholder='Search tools...'
+						leftSection={<TbSearch size={16} />}
+						value={search}
+						onChange={(event) => setSearch(event.currentTarget.value)}
+						className='w-full sm:w-[250px]'
+					/>
+				</Group>
+
+				<Grid>
+					{filteredTools.map((tool, index) => (
+						<Grid.Col
+							key={index}
+							span={{ base: 12, sm: 6, md: 4 }}
+						>
+							<ToolCard {...tool} />
+						</Grid.Col>
+					))}
+				</Grid>
+			</div>
+		</PageWrapper>
 	);
 };
 

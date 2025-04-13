@@ -39,12 +39,14 @@ export const SIDER_NAVIGATION = [
 	{
 		label: 'Tools',
 		key: 'section-tools',
+		href: '/tools',
 		isSection: true,
 		children: [
 			// 🔠 TEXT UTILITIES
 			{
 				label: 'Text Utilities',
 				key: 'text-utilities',
+				// href: '/tools/text-utilities',
 				isSection: true,
 				leftSection: <TbTypography size={18} />,
 				description: 'Text formatting tools',
@@ -135,7 +137,7 @@ export const SIDER_NAVIGATION = [
 						key: 'xml-json-converter',
 						href: '/tools/converter/xml-json-converter',
 						leftSection: <TbFileCode size={18} />,
-					}		
+					},
 				],
 			},
 

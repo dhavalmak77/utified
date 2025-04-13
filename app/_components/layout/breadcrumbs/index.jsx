@@ -67,8 +67,6 @@ export default function AppBreadcrumbs() {
 		);
 	})
 
-	console.log("ITEMS", items);
-
 	return (
 		<Breadcrumbs
 			separator='/'
