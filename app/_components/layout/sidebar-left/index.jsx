@@ -334,7 +334,7 @@ const AppSiderLeft = () => {
 										<AppShell.Section
 											grow
 											component={ScrollArea}
-											mah={200}
+											// mah={200}
 										>
 											{link.children.map((child) => (
 												<NavLink

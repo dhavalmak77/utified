@@ -152,37 +152,43 @@ export const SIDER_NAVIGATION = [
 					{
 						label: 'MD2 Hash Generator',
 						key: 'md2-hash-generator',
-						href: '/tools/hash-generators/md2',
+						href: '/tools/hash/md2',
 						leftSection: <TbHash size={18} />,
 					},
 					{
 						label: 'MD4 Hash Generator',
 						key: 'md4-hash-generator',
-						href: '/tools/hash-generators/md4',
+						href: '/tools/hash/md4',
 						leftSection: <TbHash size={18} />,
 					},
 					{
 						label: 'MD5 Hash Generator',
 						key: 'md5-hash-generator',
-						href: '/tools/hash-generators/md5',
+						href: '/tools/hash/md5',
 						leftSection: <TbHash size={18} />,
 					},
 					{
 						label: 'MD6 Hash Generator',
 						key: 'md6-hash-generator',
-						href: '/tools/hash-generators/md6',
+						href: '/tools/hash/md6',
 						leftSection: <TbHash size={18} />,
 					},
 					{
 						label: 'SHA1 Hash Generator',
 						key: 'sha1-hash-generator',
-						href: '/tools/hash-generators/sha1',
+						href: '/tools/hash/sha1',
+						leftSection: <TbHash size={18} />,
+					},
+					{
+						label: 'SHA2 Hash Generator',
+						key: 'sha2-hash-generator',
+						href: '/tools/hash/sha2',
 						leftSection: <TbHash size={18} />,
 					},
 					{
 						label: 'SHA256 Hash Generator',
 						key: 'sha256-hash-generator',
-						href: '/tools/hash-generators/sha256',
+						href: '/tools/hash/sha256',
 						leftSection: <TbHash size={18} />,
 					},
 				],
@@ -242,11 +248,11 @@ export const SIDEBAR_NAVIGATION = [
 	},
 	{
 		label: 'Generators',
-		key: 'sidebar-generators',
+		key: 'sidebar',
 		children: [
 			{
 				label: 'Text Generators',
-				key: 'sidebar-text-generators',
+				key: 'sidebar-text',
 				type: 'group',
 				children: [createLink('/lorem-ipsum', 'Lorem Ipsum Generator'), createLink('/uuid-generator', 'UUID Generator'), createLink('/password-generator', 'Password Generator')],
 			},
