@@ -166,6 +166,12 @@ export const SIDER_NAVIGATION = [
 						leftSection: <TbHash size={18} />,
 					},
 					{
+						label: 'MD6 Hash Generator',
+						key: 'md6-hash-generator',
+						href: '/tools/hash-generators/md6',
+						leftSection: <TbHash size={18} />,
+					},
+					{
 						label: 'SHA1 Hash Generator',
 						key: 'sha1-hash-generator',
 						href: '/tools/hash-generators/sha1',

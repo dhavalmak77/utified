@@ -564,8 +564,6 @@ export default function Base64() {
 							gap={10}
 						>
 							<Select
-								defaultChecked={true}
-								defaultValue=''
 								placeholder='Pick a charset'
 								data={[defaultOption, ...CHARSET_OPTIONS]}
 								comboboxProps={{ dropdownPadding: 5 }}

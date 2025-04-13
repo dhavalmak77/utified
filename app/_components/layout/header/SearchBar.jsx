@@ -9,16 +9,16 @@ export const SearchBar = ({ onFocus }) => {
 
 	// Focus input on Ctrl+K or Cmd+K
 	useEffect(() => {
-		const handleKeyDown = (e) => {
-			const isMac = navigator.platform.toLowerCase().includes('mac');
-			if ((isMac ? e.metaKey : e.ctrlKey) && e.key.toLowerCase() === 'k') {
-				e.preventDefault();
+		const handleKeyDown = (event) => {
+			if (event.ctrlKey && event.key.toLowerCase() === 'b') {
+				event.preventDefault(); // prevent browser default (like bold in editors)
 				inputRef.current?.focus();
 			}
 		};
 
-		// window.addEventListener('keydown', handleKeyDown);
-		// return () => window.removeEventListener('keydown', handleKeyDown);
+		window.addEventListener('keydown', handleKeyDown);
+
+		return () => window.removeEventListener('keydown', handleKeyDown);
 	}, []);
 
 	return (

@@ -7,6 +7,7 @@ import AppSiderLeft from './sidebar-left';
 import AppRightSider from './sidebar-right';
 import { usePathname } from 'next/navigation';
 import { AppContentArea } from './content-area';
+import { useEffect } from 'react';
 
 export const AppLayout = ({ children }) => {
 	const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
@@ -14,6 +15,19 @@ export const AppLayout = ({ children }) => {
 
 	const path = usePathname();
 	// const breadcrumbItems = breadcrumbPath(HEADER_NAVIGATION, path);
+
+	useEffect(() => {
+		const handleKeyDown = (event) => {
+			if (event.ctrlKey && event.key.toLowerCase() === 'b') {
+				event.preventDefault(); // prevent browser default (like bold in editors)
+				toggleDesktop();
+			}
+		};
+
+		window.addEventListener('keydown', handleKeyDown);
+
+		return () => window.removeEventListener('keydown', handleKeyDown);
+	}, [toggleDesktop]);
 
 	return (
 		<AppShell

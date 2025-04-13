@@ -7,7 +7,7 @@ import cn from '@/app/_lib/utils/cn';
 
 const AsideWrapper = ({ aside, isAsideVisible, setAsideVisible }) => {
 	return (
-		<Box className={cn('relative hidden md:flex flex-col border-l border-[var(--app-shell-border-color)] transition-all duration-350 ease-linear p-4', isAsideVisible ? 'w-[300px]' : 'w-[55px]')}>
+		<Box className={cn('relative hidden md:flex flex-col border-l border-[var(--app-shell-border-color)] transition-all duration-250 ease-linear p-4', isAsideVisible ? 'w-[300px]' : 'w-[55px]')}>
 			{/* Toggle Icon (Always top-right) */}
 			<div className='relative'>
 				{/* {isAsideVisible && ( */}
@@ -16,7 +16,7 @@ const AsideWrapper = ({ aside, isAsideVisible, setAsideVisible }) => {
 						size='h6'
 						fw={500}
 						className='mb-2'
-						classNames="transition-all duration-350 ease-linear"
+						classNames="transition-all duration-250 ease-linear"
 						hidden={!isAsideVisible}
 					>
 						Panel
@@ -27,7 +27,7 @@ const AsideWrapper = ({ aside, isAsideVisible, setAsideVisible }) => {
 					order={2}
 					size='h6'
 					fw={500}
-					className={cn('transition-all duration-350 ease-linear overflow-hidden', isAsideVisible ? 'opacity-100 mb-2 max-h-[40px]' : 'opacity-0 mb-0 max-h-0')}
+					className={cn('transition-all duration-250 ease-linear overflow-hidden', isAsideVisible ? 'opacity-100 mb-2 max-h-[40px]' : 'opacity-0 mb-0 max-h-0')}
 				>
 					Panel
 				</Title>
@@ -70,7 +70,7 @@ export default AsideWrapper;
 
 // const AsideWrapper = ({ aside, isAsideVisible, setAsideVisible }) => {
 // 	return (
-// 		<Box className={cn('relative hidden md:flex flex-col border-l border-[var(--app-shell-border-color)] transition-all duration-350 ease-linear p-4', isAsideVisible ? 'w-[300px] p-4' : 'w-[55px]')}>
+// 		<Box className={cn('relative hidden md:flex flex-col border-l border-[var(--app-shell-border-color)] transition-all duration-250 ease-linear p-4', isAsideVisible ? 'w-[300px] p-4' : 'w-[55px]')}>
 // 			{/* Header with Toggle Icon */}
 // 			<div className='flex items-center justify-between'>
 // 				{isAsideVisible && (

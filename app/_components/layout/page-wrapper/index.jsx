@@ -1,7 +1,7 @@
 'use client';
 
 import { AppShell, Box, Paper, Text } from '@mantine/core';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AppBreadcrumbs from '../breadcrumbs';
 import { usePathname } from 'next/navigation';
 import { PageTitle } from '../../PageTitle';
@@ -19,6 +19,21 @@ export const PageWrapper = ({
 	isAside = true
 }) => {
 	const [isAsideVisible, setAsideVisible] = useState(isAside);
+
+	useEffect(() => {
+		const handleKeyDown = (event) => {
+			const key = event.key.toLowerCase();
+			const code = event.code;
+
+			if (event.ctrlKey && (key === `\\` || code === 'Backslash')) {
+				event.preventDefault();
+				setAsideVisible((prev) => !prev);
+			}
+		};
+
+		window.addEventListener('keydown', handleKeyDown);
+		return () => window.removeEventListener('keydown', handleKeyDown);
+	}, []);
 
 	return (
 		<>
