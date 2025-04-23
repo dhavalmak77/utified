@@ -3,7 +3,7 @@
 import './style.css';
 import { PageWrapper } from "@/app/_components/layout/page-wrapper";
 import cn from "@/app/_lib/utils/cn";
-import { ActionIcon, Box, Button, Checkbox, FileButton, Group, Select, Text, Textarea, Tooltip, useMantineTheme } from "@mantine/core";
+import { ActionIcon, Box, Button, Checkbox, FileButton, Group, NumberInput, Select, Text, Textarea, Tooltip, useMantineTheme } from "@mantine/core";
 import { useHover } from "@mantine/hooks";
 import { QRCodeSVG } from "qrcode.react";
 import { useCallback, useEffect, useState } from "react";
@@ -11,6 +11,7 @@ import { LuCopy, LuCopyCheck, LuDownload, LuEraser, LuUpload, LuX } from "react-
 import { TbCircleCheck, TbCopy, TbCopyCheck, TbDownload, TbQrcode, TbQrcodeOff, TbSettings, TbSettingsMinus, TbSettingsFilled, TbSettingsPlus } from "react-icons/tb";
 import { CHARSET_OPTIONS } from "./charsets";
 import { base64Conversions } from './charset-conversions';
+import { AiOutlineRedo, AiOutlineUndo } from 'react-icons/ai';
 
 const initialCopyStatus = { type: '', isSuccess: false, hasError: false, toggle: false };
 const initialErrorState = { type: '', message: '' };
@@ -19,8 +20,8 @@ const defaultOption = {
 	value: '',
 };
 
-const ENCODE = 'ENCODE';
-const DECODE = 'DECODE';
+const __JSON = 'JSON';
+const __OBJECT = 'OBJECT';
 
 const maxQrCodeLength = 2953;
 
@@ -29,13 +30,16 @@ export default function Base64() {
 
 	const [encodeInput, setEncodeInput] = useState('');
 	const [decodeInput, setDecodeInput] = useState('');
-	const [qrValues, setQrValues] = useState({ [ENCODE]: '', [DECODE]: '' });
-	const [error, setError] = useState(initialErrorState);
+	const [useTabs, setUseTabs] = useState('');
+	const [tabSpace, setTabSpace] = useState(2);
+	const [autoSync, setAutoSync] = useState(false);
+	const [error, setError] = useState('');
+	const [history, setHistory] = useState([]);
+	const [currentIndex, setCurrentIndex] = useState(-1);
+	const [qrValues, setQrValues] = useState({ [__JSON]: '', [__OBJECT]: '' });
 	const [copyStatus, setCopyStatus] = useState(initialCopyStatus);
-	const [settings, setSettings] = useState([ENCODE]);
-	const [selectedCharset, setSelectedCharset] = useState({ conversionType: '', charset: '', title: '', [ENCODE]: '', [DECODE]: '' });
+	const [settings, setSettings] = useState([__JSON]);
 	const [showQRCode, setShowQRCode] = useState([]);
-	const [autoSync, setAutoSync] = useState({ [ENCODE]: false, [DECODE]: false });
 
 	const { hovered: hoveredTakeOutputAsInput, ref: refTakeOutputAsInput } = useHover();
 	const { hovered: hoveredUploadFile1, ref: refUploadFile1 } = useHover();
@@ -47,6 +51,8 @@ export default function Base64() {
 	const { hovered: hoveredDownload1, ref: refDownload1 } = useHover();
 	const { hovered: hoveredDownload2, ref: refDownload2 } = useHover();
 	const { hovered: hoveredClearBoth, ref: refClearBoth } = useHover();
+	const { hovered: hoveredUndo2, ref: refUndo2 } = useHover();
+	const { hovered: hoveredRedo2, ref: refRedo2 } = useHover();
 
 	useEffect(() => {
 		if (copyStatus.hasError || copyStatus.isSuccess) {
@@ -59,17 +65,27 @@ export default function Base64() {
 	}, [copyStatus]);
 
 	useEffect(() => {
-		if (showQRCode.includes(ENCODE) || showQRCode.includes(DECODE)) {
+		if (showQRCode.includes(__JSON) || showQRCode.includes(__OBJECT)) {
 			const qrCodeId = setTimeout(() => {
 				setQrValues({
-					[ENCODE]: encodeInput,
-					[DECODE]: decodeInput,
+					[__JSON]: encodeInput,
+					[__OBJECT]: decodeInput,
 				});
 			}, 750);
 
 			return () => clearTimeout(qrCodeId);
 		}
 	}, [encodeInput, decodeInput, showQRCode]);
+
+	const addToHistory = useCallback(
+		(newState) => {
+			const updatedHistory = history.slice(0, currentIndex + 1);
+			updatedHistory.push(newState);
+			setHistory(updatedHistory);
+			setCurrentIndex(updatedHistory.length - 1);
+		},
+		[history, currentIndex]
+	);
 
 	const handleQRCode = useCallback(
 		(type) => {
@@ -90,57 +106,57 @@ export default function Base64() {
 		setSettings((prev) => (prev.includes(type) ? prev.filter((el) => el !== type) : [...prev, type]));
 	}, []);
 
-	const handleConversion = useCallback(
-		(conversionType, inputText) => {
-			setError(initialErrorState);
+	const handleUndo = () => {
+		if (currentIndex > 0) {
+			const prevState = history[currentIndex - 1];
+			setEncodeInput(prevState.jsonInput);
+			setDecodeInput(prevState.objectOutput);
+			setCurrentIndex(currentIndex - 1);
+		}
+	};
 
-			if (conversionType === ENCODE) {
-				setEncodeInput(inputText);
+	const handleRedo = () => {
+		if (currentIndex < history.length - 1) {
+			const nextState = history[currentIndex + 1];
+			setEncodeInput(nextState.jsonInput);
+			setDecodeInput(nextState.objectOutput);
+			setCurrentIndex(currentIndex + 1);
+		}
+	};
 
-				if (selectedCharset.conversionType === ENCODE && selectedCharset.charset) {
-					const encoded = base64Conversions(ENCODE, inputText, selectedCharset.charset);
-					if (encoded.status) {
-						console.log("ENCODED", encoded);
-						setDecodeInput(encoded.data);
-					} else {
-						setError({ type: ENCODE, message: encoded.data });
-						setDecodeInput('');
-					}
-				} else {
-					try {
-						const encodedText = btoa(inputText);
-						setDecodeInput(encodedText);
-					} catch (error) {
-						const errorMessage = error.message.split(':').pop().trim();
-						setError({ type: ENCODE, message: errorMessage });
-						setDecodeInput('');
-					}
-				}
-			} else {
-				setDecodeInput(inputText);
+	const handleConversion = () => {
+		if (!encodeInput) {
+			setError('');
+			setDecodeInput('');
+			return;
+		}
 
-				if (selectedCharset.conversionType === DECODE && selectedCharset.charset) {
-					const decoded = base64Conversions(DECODE, inputText, selectedCharset.charset);
-					if (decoded.status) {
-						setEncodeInput(decoded.data);
-					} else {
-						setError({ type: DECODE, message: decoded.data });
-						setEncodeInput('');
+		try {
+			setError(null);
+			const parsedObject = JSON.parse(encodeInput);
+			const space = useTabs ? '\t' : Number(tabSpace);
+			
+			let output = JSON.stringify(parsedObject, null, space);
+			console.log('I am here', output);
+			if (typeof parsedObject === 'object' && !Array.isArray(parsedObject) && parsedObject !== null) {
+				output = output.replace(/"([^"]+)":/g, (match, prefix, key, suffix) => {
+					let formattedKey = `${prefix}:`;
+					if (prefix.includes(' ') || prefix.includes('-') || /^[0-9]/.test(prefix)) {
+						formattedKey = `"${prefix}":`;
 					}
-				} else {
-					try {
-						const decodedText = atob(inputText);
-						setEncodeInput(decodedText);
-					} catch (error) {
-						const errorMessage = error.message.split(':').pop().trim();
-						setError({ type: DECODE, message: errorMessage });
-						setEncodeInput('');
-					}
-				}
+
+					return formattedKey;
+				});
 			}
-		},
-		[selectedCharset]
-	);
+
+			setDecodeInput(output);
+			addToHistory({ encodeInput, objectOutput: output });
+		} catch (e) {
+			console.log(e);
+			setError(e.message);
+			setDecodeInput('');
+		}
+	};
 
 	const handleClear = useCallback(() => {
 		setError(initialErrorState);
@@ -151,7 +167,7 @@ export default function Base64() {
 	const handleCopy = useCallback(
 		async (conversionType) => {
 			try {
-				const textToCopy = conversionType === ENCODE ? encodeInput : decodeInput;
+				const textToCopy = conversionType === __JSON ? encodeInput : decodeInput;
 				await navigator.clipboard.writeText(textToCopy);
 				setCopyStatus({ type: conversionType, isSuccess: true, hasError: false, toggle: !copyStatus.toggle });
 			} catch (err) {
@@ -164,7 +180,7 @@ export default function Base64() {
 
 	const handleDownload = useCallback(
 		(typeIdentity) => {
-			const decodeInput = typeIdentity === ENCODE ? encodeInput : decodeInput;
+			const decodeInput = typeIdentity === __JSON ? encodeInput : decodeInput;
 			const blob = new Blob([decodeInput], { type: 'text/plain;charset=utf-8' });
 			const url = URL.createObjectURL(blob);
 			const a = document.createElement('a');
@@ -178,60 +194,28 @@ export default function Base64() {
 		[encodeInput, decodeInput]
 	);
 
-	const handleFileUpload = useCallback(
-		(type, file) => {
+	const handleFileUpload = useCallback((file) => {
 			const reader = new FileReader();
 			reader.onload = (e) => {
-				if (type === ENCODE) {
-					setEncodeInput(e.target.decodeInput);
-				} else {
-					setDecodeInput(e.target.decodeInput);
-				}
-
-				handleConversion(type, e.target.decodeInput);
+				setEncodeInput(e.target.result);
+				handleConversion();
 			};
 			reader.readAsText(file);
 		},
 		[handleConversion]
 	);
 
-	const handleCharsetChange = (type, value, option) => {
-		setSelectedCharset({
-			conversionType: type,
-			charset: value,
-			// title: option.label,
-			[ENCODE]: type === ENCODE ? value : '',
-			[DECODE]: type === DECODE ? value : '',
-		});
-	};
+	useEffect(() => {
+		if (autoSync) {
+			handleConversion();
+		}
+	}, [encodeInput, useTabs, tabSpace, autoSync]);
 
-	let encodeItemLabel = 'Base64 Encode',
-		decodeItemLabel = 'Base64 Decode';
-	if (selectedCharset.conversionType === ENCODE && selectedCharset[ENCODE]) {
-		encodeItemLabel = (
-			<Text>
-				{encodeItemLabel}{' '}
-				<Text
-					type='secondary'
-					style={{ fontSize: 11.5 }}
-				>
-					({selectedCharset.title})
-				</Text>
-			</Text>
-		); //(${selectedCharset.title})`;
-	} else if (selectedCharset.conversionType === DECODE && selectedCharset[DECODE]) {
-		decodeItemLabel = (
-			<Text>
-				{decodeItemLabel}{' '}
-				<Text
-					type='secondary'
-					style={{ fontSize: 11.5 }}
-				>
-					({selectedCharset.title})
-				</Text>
-			</Text>
-		); //(${selectedCharset.title})`;
-	}
+	useEffect(() => {
+		if (!autoSync) {
+			handleConversion();
+		}
+	}, [useTabs, tabSpace]);
 
 	const qrCustomStatus = (info, type) => {
 		if (info.status.includes('length-error')) {
@@ -257,8 +241,8 @@ export default function Base64() {
 
 	return (
 		<PageWrapper
-			title='Base64 Encoder/Decoder'
-			description='Encode or decode your text easily with base64.'
+			title='JSON to Object'
+			description='Convert JSON data to Object easily.'
 			aside={true}
 		>
 			{/* Common Card */}
@@ -268,19 +252,19 @@ export default function Base64() {
 					<div className='flex w-full gap-0 items-end'>
 						{/* Input */}
 						<Textarea
-							label='Base64 Encode'
-							description='Enter text to encode'
+							label='JSON'
+							description='Enter JSON to convert'
 							size='md'
-							rows={5}
+							rows={10}
 							w={'100%'}
-							className={showQRCode.includes(ENCODE) && qrValues[ENCODE].length ? 'active-qr' : ''}
-							placeholder='Write text or upload a file'
+							className={showQRCode.includes(__JSON) && qrValues[__JSON].length ? 'active-qr' : ''}
+							placeholder='Enter JSON or upload a file'
 							radius='md'
 							value={encodeInput}
 							error=''
 							onChange={(e) => {
-								if (autoSync[ENCODE]) {
-									handleConversion(ENCODE, e.target.value);
+								if (autoSync) {
+									handleConversion();
 								}
 								setEncodeInput(e.target.value);
 							}}
@@ -305,35 +289,35 @@ export default function Base64() {
 								)
 							}
 						/>
-						{showQRCode.includes(ENCODE) && qrValues[ENCODE] && (
+						{showQRCode.includes(__JSON) && qrValues[__JSON] && (
 							<div className='border-t border-r border-b border-[#d9d9d9] rounded-tr-md rounded-br-md p-1.5'>
 								<QRCodeSVG
-									size={126}
-									value={qrValues[ENCODE].slice(0, 1000)}
+									size={250}
+									value={qrValues[__JSON].slice(0, 1000)}
 									level='L'
 									bordered={false}
-									status={qrValues[ENCODE].length > 1000 ? 'length-error' : 'active'}
-									statusRender={(info) => qrCustomStatus(info, ENCODE)}
+									status={qrValues[__JSON].length > 1000 ? 'length-error' : 'active'}
+									statusRender={(info) => qrCustomStatus(info, __JSON)}
 								/>
 							</div>
 						)}
 					</div>
-					{error.type === ENCODE && <Text type='danger'>{error.message}</Text>}
+					{error && <Text type='danger'>{error}</Text>}
 
 					<Group justify='space-between'>
 						<Group>
 							<Button
 								variant='filled'
-								// className={cn(!autoSync[ENCODE] && 'rounded-md py-2 border-blue-500 text-blue-500 bg-transparent hover:bg-blue-500 hover:text-white')}
-								disabled={autoSync[ENCODE]}
-								onClick={() => handleConversion(ENCODE, encodeInput)}
+								// className={cn(!autoSync[__JSON] && 'rounded-md py-2 border-blue-500 text-blue-500 bg-transparent hover:bg-blue-500 hover:text-white')}
+								disabled={autoSync}
+								onClick={() => handleConversion()}
 							>
-								Encode
+								Convert
 							</Button>
 							<Checkbox
-								label='Auto Encode'
-								checked={autoSync[ENCODE]}
-								onChange={(e) => setAutoSync((prev) => ({ ...prev, [ENCODE]: !prev[ENCODE] }))}
+								label='Auto Convert'
+								checked={autoSync}
+								onChange={(e) => setAutoSync((prev) => !prev)}
 								style={{ alignSelf: 'center' }}
 							/>
 						</Group>
@@ -343,30 +327,30 @@ export default function Base64() {
 						>
 							<Tooltip label='Settings'>
 								<Button
-									onClick={() => handleSettings(ENCODE)}
+									onClick={() => handleSettings(__JSON)}
 									unstyled
-									c={settings.includes(ENCODE) ? 'blue' : ''}
+									c={settings.includes(__JSON) ? 'blue' : ''}
 									p={10}
 								>
-									{settings.includes(ENCODE) ? <TbSettingsMinus size={16} /> : <TbSettingsPlus size={16} />}
+									{settings.includes(__JSON) ? <TbSettingsMinus size={16} /> : <TbSettingsPlus size={16} />}
 								</Button>
 							</Tooltip>
-							<Tooltip label={copyStatus.type !== ENCODE ? 'Copy' : copyStatus.isSuccess ? 'Copied' : copyStatus.hasError ? 'Error copying' : 'Copy'}>
+							<Tooltip label={copyStatus.type !== __JSON ? 'Copy' : copyStatus.isSuccess ? 'Copied' : copyStatus.hasError ? 'Error copying' : 'Copy'}>
 								<Button
 									variant={hoveredCopy1 ? 'filled' : 'default'}
-									onClick={() => handleCopy(ENCODE)}
+									onClick={() => handleCopy(__JSON)}
 									// className={cn('bg-blue-500 text-white border border-blue-500 transition-colors', 'hover:bg-white hover:text-blue-500 hover:border-blue-500', { 'opacity-50 cursor-not-allowed': !encodeInput })}
 									disabled={!encodeInput}
 									px={10}
 									ref={refCopy1}
 								>
-									{copyStatus.type !== ENCODE ? <TbCopy size={16} /> : <TbCopyCheck size={16} />}
+									{copyStatus.type !== __JSON ? <TbCopy size={16} /> : <TbCopyCheck size={16} />}
 								</Button>
 							</Tooltip>
 							<Tooltip label='Download'>
 								<Button
 									variant={hoveredDownload1 ? 'filled' : 'default'}
-									onClick={() => handleDownload(ENCODE)}
+									onClick={() => handleDownload(__JSON)}
 									// className={cn('bg-blue-500 text-white border border-blue-500 transition-colors', 'hover:bg-white hover:text-blue-500 hover:border-blue-500', { 'opacity-50 cursor-not-allowed': !encodeInput })}
 									disabled={!encodeInput}
 									px={10}
@@ -381,29 +365,20 @@ export default function Base64() {
 						spacing={0}
 						gap={10}
 						justify='space-between'
-						hidden={!settings.includes(ENCODE)}
+						hidden={!settings.includes(__JSON)}
 					>
 						<Group
 							spacing={0}
 							gap={10}
-						>
-							<Select
-								placeholder='Pick a charset'
-								data={[defaultOption, ...CHARSET_OPTIONS]}
-								comboboxProps={{ dropdownPadding: 5 }}
-								onChange={(value) => handleCharsetChange(ENCODE, value)}
-								allowDeselect={false}
-								searchable
-							/>
-						</Group>
+						></Group>
 
 						<Group
 							spacing={0}
 							gap={10}
 						>
 							<FileButton
-								onChange={(e) => handleFileUpload(ENCODE, e)}
-								accept='image/png,image/jpeg'
+								onChange={(e) => handleFileUpload(e)}
+								accept='text'
 							>
 								{(props) => (
 									<Button
@@ -418,16 +393,16 @@ export default function Base64() {
 							</FileButton>
 
 							<Tooltip
-								label={showQRCode.includes(ENCODE) ? 'QR Code is active' : 'QR Code'}
+								label={showQRCode.includes(__JSON) ? 'QR Code is active' : 'QR Code'}
 								withArrow
 								arrowSize={8}
 							>
 								<Button
-									variant={hoveredQr1 || showQRCode.includes(ENCODE) ? 'filled' : 'default'}
-									// variant={showQRCode.includes(ENCODE) ? 'filled' : 'default'}
-									onClick={() => handleQRCode(ENCODE)}
+									variant={hoveredQr1 || showQRCode.includes(__JSON) ? 'filled' : 'default'}
+									// variant={showQRCode.includes(__JSON) ? 'filled' : 'default'}
+									onClick={() => handleQRCode(__JSON)}
 									className='text-black border-none rounded-md bg-transparent hover:text-blue-500 shadow-none'
-									leftSection={showQRCode.includes(ENCODE) ? <TbCircleCheck size={18} /> : <TbQrcode size={18} />}
+									leftSection={showQRCode.includes(__JSON) ? <TbCircleCheck size={18} /> : <TbQrcode size={18} />}
 									ref={refQr1}
 								>
 									QR Code
@@ -443,22 +418,23 @@ export default function Base64() {
 						<div className='flex w-full gap-0 items-end'>
 							{/* Input */}
 							<Textarea
-								label='Base64 Decode'
-								description='Converted text will appear here'
+								label='Object'
+								description='Converted object will appear here'
 								size='md'
-								rows={5}
+								rows={10}
 								w={'100%'}
-								className={showQRCode.includes(DECODE) && qrValues[DECODE].length ? 'active-qr' : ''}
-								placeholder='Converted text will appear here'
+								className={showQRCode.includes(__OBJECT) && qrValues[__OBJECT].length ? 'active-qr' : ''}
+								placeholder='Converted object will appear here'
 								radius='md'
 								value={decodeInput}
 								error=''
 								onChange={(e) => {
-									if (autoSync[DECODE]) {
-										handleConversion(DECODE, e.target.value);
+									if (autoSync[__OBJECT]) {
+										handleConversion(__OBJECT, e.target.value);
 									}
 									setDecodeInput(e.target.value);
 								}}
+								style={{ tabSize: useTabs ? tabSpace : undefined }}
 								rightSectionWidth={24}
 								rightSection={
 									decodeInput && (
@@ -480,37 +456,49 @@ export default function Base64() {
 									)
 								}
 							/>
-							{showQRCode.includes(DECODE) && qrValues[DECODE] && (
+							{showQRCode.includes(__OBJECT) && qrValues[__OBJECT] && (
 								<div className='border-t border-r border-b border-[#d9d9d9] rounded-tr-md rounded-br-md p-1.5'>
 									<QRCodeSVG
-										size={126}
-										value={qrValues[DECODE].slice(0, 1000)}
+										size={250}
+										value={qrValues[__OBJECT].slice(0, 1000)}
 										level='L'
 										bordered={false}
-										status={qrValues[DECODE].length > 1000 ? 'length-error' : 'active'}
-										statusRender={(info) => qrCustomStatus(info, DECODE)}
+										status={qrValues[__OBJECT].length > 1000 ? 'length-error' : 'active'}
+										statusRender={(info) => qrCustomStatus(info, __OBJECT)}
 									/>
 								</div>
 							)}
 						</div>
 					</Group>
-					{error.type === DECODE && <Text type='danger'>{error.message}</Text>}
 
 					<Group justify='space-between'>
 						<Group>
-							<Button
-								variant='filled'
-								// className={cn(!autoSync[DECODE] && 'rounded-md py-2 border-blue-500 text-blue-500 bg-transparent hover:bg-blue-500 hover:text-white')}
-								disabled={autoSync[DECODE]}
-								onClick={() => handleConversion(DECODE, decodeInput)}
-							>
-								Decode
-							</Button>
 							<Checkbox
-								label='Auto Decode'
-								checked={autoSync[DECODE]}
-								onChange={(e) => setAutoSync((prev) => ({ ...prev, [DECODE]: !prev[DECODE] }))}
+								label='Use tabs'
+								checked={useTabs}
+								onChange={(e) => setUseTabs(e.target.checked)}
 								style={{ alignSelf: 'center' }}
+							/>
+							<NumberInput
+								value={tabSpace}
+								min={1}
+								max={8}
+								onChange={(value) => setTabSpace((prev) => (!value ? prev : Math.floor(value)))}
+								step={1}
+								className={cn('w-[122px]')}
+								rightSection={
+									<Text
+										size='sm'
+										c='black'
+									>
+										Indent size
+									</Text>
+								}
+								rightSectionWidth={100}
+								// w={115}
+								miw={95}
+								// variant='transparent'
+								hideControls
 							/>
 						</Group>
 						<Group
@@ -519,30 +507,30 @@ export default function Base64() {
 						>
 							<Tooltip label='Settings'>
 								<Button
-									onClick={() => handleSettings(DECODE)}
+									onClick={() => handleSettings(__OBJECT)}
 									unstyled
-									c={settings.includes(DECODE) ? 'blue' : ''}
+									c={settings.includes(__OBJECT) ? 'blue' : ''}
 									p={10}
 								>
-									{settings.includes(DECODE) ? <TbSettingsMinus size={16} /> : <TbSettingsPlus size={16} />}
+									{settings.includes(__OBJECT) ? <TbSettingsMinus size={16} /> : <TbSettingsPlus size={16} />}
 								</Button>
 							</Tooltip>
-							<Tooltip label={copyStatus.type !== DECODE ? 'Copy' : copyStatus.isSuccess ? 'Copied' : copyStatus.hasError ? 'Error copying' : 'Copy'}>
+							<Tooltip label={copyStatus.type !== __OBJECT ? 'Copy' : copyStatus.isSuccess ? 'Copied' : copyStatus.hasError ? 'Error copying' : 'Copy'}>
 								<Button
 									variant={hoveredCopy2 ? 'filled' : 'default'}
-									onClick={() => handleCopy(DECODE)}
+									onClick={() => handleCopy(__OBJECT)}
 									// className={cn('bg-blue-500 text-white border border-blue-500 transition-colors', 'hover:bg-white hover:text-blue-500 hover:border-blue-500', { 'opacity-50 cursor-not-allowed': !decodeInput })}
 									disabled={!decodeInput}
 									px={10}
 									ref={refCopy2}
 								>
-									{copyStatus.type !== DECODE ? <TbCopy size={16} /> : <TbCopyCheck size={16} />}
+									{copyStatus.type !== __OBJECT ? <TbCopy size={16} /> : <TbCopyCheck size={16} />}
 								</Button>
 							</Tooltip>
 							<Tooltip label='Download'>
 								<Button
 									variant={hoveredDownload2 ? 'filled' : 'default'}
-									onClick={() => handleDownload(DECODE)}
+									onClick={() => handleDownload(__OBJECT)}
 									// className={cn('bg-blue-500 text-white border border-blue-500 transition-colors', 'hover:bg-white hover:text-blue-500 hover:border-blue-500', { 'opacity-50 cursor-not-allowed': !decodeInput })}
 									disabled={!decodeInput}
 									px={10}
@@ -557,53 +545,49 @@ export default function Base64() {
 						spacing={0}
 						gap={10}
 						justify='space-between'
-						hidden={!settings.includes(DECODE)}
+						hidden={!settings.includes(__OBJECT)}
 					>
 						<Group
 							spacing={0}
 							gap={10}
 						>
-							<Select
-								placeholder='Pick a charset'
-								data={[defaultOption, ...CHARSET_OPTIONS]}
-								comboboxProps={{ dropdownPadding: 5 }}
-								onChange={(value) => handleCharsetChange(DECODE, value)}
-								allowDeselect={false}
-								searchable
-							/>
+							<Button
+								variant={hoveredUndo2 ? 'filled' : 'default'}
+								// className={cn(!autoSync[HASH] && 'rounded-md py-2 border-blue-500 text-blue-500 bg-transparent hover:bg-blue-500 hover:text-white')}
+								onClick={handleUndo}
+								leftSection={<AiOutlineUndo size={16} />}
+								disabled={currentIndex <= 0}
+								ref={refUndo2}
+							>
+								Undo
+							</Button>
+							<Button
+								variant={hoveredRedo2 ? 'filled' : 'default'}
+								// className={cn(!autoSync[HASH] && 'rounded-md py-2 border-blue-500 text-blue-500 bg-transparent hover:bg-blue-500 hover:text-white')}
+								leftSection={<AiOutlineRedo size={16} />}
+								onClick={handleRedo}
+								disabled={currentIndex >= history.length - 1}
+								ref={refRedo2}
+							>
+								Redo
+							</Button>
 						</Group>
 
 						<Group
 							spacing={0}
 							gap={10}
 						>
-							<FileButton
-								onChange={(e) => handleFileUpload(DECODE, e)}
-								accept='image/png,image/jpeg'
-							>
-								{(props) => (
-									<Button
-										variant={hoveredUploadFile2 ? 'filled' : 'default'}
-										leftSection={<LuUpload />}
-										ref={refUploadFile2}
-										{...props}
-									>
-										Upload File
-									</Button>
-								)}
-							</FileButton>
-
 							<Tooltip
-								label={showQRCode.includes(DECODE) ? 'QR Code is active' : 'QR Code'}
+								label={showQRCode.includes(__OBJECT) ? 'QR Code is active' : 'QR Code'}
 								withArrow
 								arrowSize={8}
 							>
 								<Button
-									variant={hoveredQr2 || showQRCode.includes(DECODE) ? 'filled' : 'default'}
-									// variant={showQRCode.includes(DECODE) ? 'filled' : 'default'}
-									onClick={() => handleQRCode(DECODE)}
+									variant={hoveredQr2 || showQRCode.includes(__OBJECT) ? 'filled' : 'default'}
+									// variant={showQRCode.includes(__OBJECT) ? 'filled' : 'default'}
+									onClick={() => handleQRCode(__OBJECT)}
 									className='text-black border-none rounded-md bg-transparent hover:text-blue-500 shadow-none'
-									leftSection={showQRCode.includes(DECODE) ? <TbCircleCheck size={18} /> : <TbQrcode size={18} />}
+									leftSection={showQRCode.includes(__OBJECT) ? <TbCircleCheck size={18} /> : <TbQrcode size={18} />}
 									ref={refQr2}
 								>
 									QR Code
@@ -620,7 +604,7 @@ export default function Base64() {
 						key={el.value}
 						variant={caseType === el.value ? 'filled' : 'default'}
 						className={cn('rounded-md px-4 py-2')}
-						onClick={() => handleConvert(el.value, text)}
+						onClick={() => handleConversion(el.value, text)}
 					>
 						{el.label}
 					</Button>

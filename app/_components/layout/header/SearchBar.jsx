@@ -35,7 +35,7 @@ export const SearchBar = ({ onFocus }) => {
 					<Text
 						size='xs'
 						fw={500}
-						c='black'
+						// c='black'
 					>
 						Ctrl + K
 					</Text>
