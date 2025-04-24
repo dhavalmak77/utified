@@ -311,7 +311,7 @@ export default function Base64() {
 									size={250}
 									value={qrValues[__CSV].slice(0, 1000)}
 									level='L'
-									bordered={false}
+									bordered='false'
 									status={qrValues[__CSV].length > 1000 ? 'length-error' : 'active'}
 									statusRender={(info) => qrCustomStatus(info, __CSV)}
 								/>
@@ -478,7 +478,7 @@ export default function Base64() {
 										size={250}
 										value={qrValues[__JSON].slice(0, 1000)}
 										level='L'
-										bordered={false}
+										bordered='false'
 										status={qrValues[__JSON].length > 1000 ? 'length-error' : 'active'}
 										statusRender={(info) => qrCustomStatus(info, __JSON)}
 									/>

@@ -257,7 +257,7 @@ export default function Bcrypt() {
 									size={126}
 									value={qrValues[INPUT].slice(0, 1000)}
 									level='L'
-									bordered={false}
+									bordered='false'
 									status={qrValues[INPUT].length > 1000 ? 'length-error' : 'active'}
 									statusRender={(info) => qrCustomStatus(info, INPUT)}
 								/>
@@ -419,7 +419,7 @@ export default function Bcrypt() {
 										size={126}
 										value={qrValues[HASH].slice(0, 1000)}
 										level='L'
-										bordered={false}
+										bordered='false'
 										status={qrValues[HASH].length > 1000 ? 'length-error' : 'active'}
 										statusRender={(info) => qrCustomStatus(info, HASH)}
 									/>

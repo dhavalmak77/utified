@@ -311,7 +311,7 @@ export default function Base64() {
 									size={126}
 									value={qrValues[ENCODE].slice(0, 1000)}
 									level='L'
-									bordered={false}
+									bordered='false'
 									status={qrValues[ENCODE].length > 1000 ? 'length-error' : 'active'}
 									statusRender={(info) => qrCustomStatus(info, ENCODE)}
 								/>
@@ -486,7 +486,7 @@ export default function Base64() {
 										size={126}
 										value={qrValues[DECODE].slice(0, 1000)}
 										level='L'
-										bordered={false}
+										bordered='false'
 										status={qrValues[DECODE].length > 1000 ? 'length-error' : 'active'}
 										statusRender={(info) => qrCustomStatus(info, DECODE)}
 									/>
