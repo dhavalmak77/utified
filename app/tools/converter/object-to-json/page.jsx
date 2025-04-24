@@ -18,8 +18,8 @@ const defaultOption = {
 	value: '',
 };
 
-const __JSON = 'JSON';
 const __OBJECT = 'OBJECT';
+const __JSON = 'JSON';
 
 const maxQrCodeLength = 2953;
 
@@ -34,9 +34,9 @@ export default function Base64() {
 	const [error, setError] = useState('');
 	const [history, setHistory] = useState([]);
 	const [currentIndex, setCurrentIndex] = useState(-1);
-	const [qrValues, setQrValues] = useState({ [__JSON]: '', [__OBJECT]: '' });
+	const [qrValues, setQrValues] = useState({ [__OBJECT]: '', [__JSON]: '' });
 	const [copyStatus, setCopyStatus] = useState(initialCopyStatus);
-	const [settings, setSettings] = useState([__JSON]);
+	const [settings, setSettings] = useState([__OBJECT]);
 	const [showQRCode, setShowQRCode] = useState([]);
 
 	const { hovered: hoveredTakeOutputAsInput, ref: refTakeOutputAsInput } = useHover();
@@ -63,11 +63,11 @@ export default function Base64() {
 	}, [copyStatus]);
 
 	useEffect(() => {
-		if (showQRCode.includes(__JSON) || showQRCode.includes(__OBJECT)) {
+		if (showQRCode.includes(__OBJECT) || showQRCode.includes(__JSON)) {
 			const qrCodeId = setTimeout(() => {
 				setQrValues({
-					[__JSON]: encodeInput,
-					[__OBJECT]: decodeInput,
+					[__OBJECT]: encodeInput,
+					[__JSON]: decodeInput,
 				});
 			}, 750);
 
@@ -131,26 +131,20 @@ export default function Base64() {
 
 		try {
 			setError(null);
-			const parsedObject = JSON.parse(encodeInput);
 			const space = useTabs ? '\t' : Number(tabSpace);
-			
-			let output = JSON.stringify(parsedObject, null, space);
-			console.log('I am here', output);
-			if (typeof parsedObject === 'object' && !Array.isArray(parsedObject) && parsedObject !== null) {
-				output = output.replace(/"([^"]+)":/g, (match, prefix, key, suffix) => {
-					let formattedKey = `${prefix}:`;
-					if (prefix.includes(' ') || prefix.includes('-') || /^[0-9]/.test(prefix)) {
-						formattedKey = `"${prefix}":`;
-					}
 
-					return formattedKey;
-				});
+			let parsedObject;
+			if (typeof encodeInput === 'string') {
+				parsedObject = eval('(' + encodeInput + ')');
+			} else {
+				parsedObject = encodeInput;
 			}
 
-			setDecodeInput(output);
-			addToHistory({ encodeInput, objectOutput: output });
+			const jsonString = JSON.stringify(parsedObject, null, space);
+
+			setDecodeInput(jsonString);
+			addToHistory({ encodeInput, objectOutput: jsonString });
 		} catch (e) {
-			console.log(e);
 			setError(e.message);
 			setDecodeInput('');
 		}
@@ -165,7 +159,7 @@ export default function Base64() {
 	const handleCopy = useCallback(
 		async (conversionType) => {
 			try {
-				const textToCopy = conversionType === __JSON ? encodeInput : decodeInput;
+				const textToCopy = conversionType === __OBJECT ? encodeInput : decodeInput;
 				await navigator.clipboard.writeText(textToCopy);
 				setCopyStatus({ type: conversionType, isSuccess: true, hasError: false, toggle: !copyStatus.toggle });
 			} catch (err) {
@@ -178,7 +172,7 @@ export default function Base64() {
 
 	const handleDownload = useCallback(
 		(typeIdentity) => {
-			const decodeInput = typeIdentity === __JSON ? encodeInput : decodeInput;
+			const decodeInput = typeIdentity === __OBJECT ? encodeInput : decodeInput;
 			const blob = new Blob([decodeInput], { type: 'text/plain;charset=utf-8' });
 			const url = URL.createObjectURL(blob);
 			const a = document.createElement('a');
@@ -239,8 +233,8 @@ export default function Base64() {
 
 	return (
 		<PageWrapper
-			title='JSON to Object'
-			description='Convert JSON data to Object easily.'
+			title='Object to JSON Converter'
+			description='Convert Object data to JSON easily.'
 			aside={true}
 		>
 			{/* Common Card */}
@@ -250,13 +244,13 @@ export default function Base64() {
 					<div className='flex w-full gap-0 items-end'>
 						{/* Input */}
 						<Textarea
-							label='JSON'
-							description='Enter JSON to convert'
+							label='Object'
+							description='Enter Object to convert'
 							size='md'
 							rows={10}
 							w={'100%'}
-							className={showQRCode.includes(__JSON) && qrValues[__JSON].length ? 'active-qr' : ''}
-							placeholder='Enter JSON or upload a file'
+							className={showQRCode.includes(__OBJECT) && qrValues[__OBJECT].length ? 'active-qr' : ''}
+							placeholder='Enter Object or upload a file'
 							radius='md'
 							value={encodeInput}
 							error=''
@@ -287,15 +281,15 @@ export default function Base64() {
 								)
 							}
 						/>
-						{showQRCode.includes(__JSON) && qrValues[__JSON] && (
+						{showQRCode.includes(__OBJECT) && qrValues[__OBJECT] && (
 							<div className='border-t border-r border-b border-[#d9d9d9] rounded-tr-md rounded-br-md p-1.5'>
 								<QRCodeSVG
 									size={250}
-									value={qrValues[__JSON].slice(0, 1000)}
+									value={qrValues[__OBJECT].slice(0, 1000)}
 									level='L'
 									bordered={false}
-									status={qrValues[__JSON].length > 1000 ? 'length-error' : 'active'}
-									statusRender={(info) => qrCustomStatus(info, __JSON)}
+									status={qrValues[__OBJECT].length > 1000 ? 'length-error' : 'active'}
+									statusRender={(info) => qrCustomStatus(info, __OBJECT)}
 								/>
 							</div>
 						)}
@@ -306,7 +300,7 @@ export default function Base64() {
 						<Group>
 							<Button
 								variant='filled'
-								// className={cn(!autoSync[__JSON] && 'rounded-md py-2 border-blue-500 text-blue-500 bg-transparent hover:bg-blue-500 hover:text-white')}
+								// className={cn(!autoSync[__OBJECT] && 'rounded-md py-2 border-blue-500 text-blue-500 bg-transparent hover:bg-blue-500 hover:text-white')}
 								disabled={autoSync}
 								onClick={() => handleConversion()}
 							>
@@ -325,30 +319,30 @@ export default function Base64() {
 						>
 							<Tooltip label='Settings'>
 								<Button
-									onClick={() => handleSettings(__JSON)}
+									onClick={() => handleSettings(__OBJECT)}
 									unstyled
-									c={settings.includes(__JSON) ? 'blue' : ''}
+									c={settings.includes(__OBJECT) ? 'blue' : ''}
 									p={10}
 								>
-									{settings.includes(__JSON) ? <TbSettingsMinus size={16} /> : <TbSettingsPlus size={16} />}
+									{settings.includes(__OBJECT) ? <TbSettingsMinus size={16} /> : <TbSettingsPlus size={16} />}
 								</Button>
 							</Tooltip>
-							<Tooltip label={copyStatus.type !== __JSON ? 'Copy' : copyStatus.isSuccess ? 'Copied' : copyStatus.hasError ? 'Error copying' : 'Copy'}>
+							<Tooltip label={copyStatus.type !== __OBJECT ? 'Copy' : copyStatus.isSuccess ? 'Copied' : copyStatus.hasError ? 'Error copying' : 'Copy'}>
 								<Button
 									variant={hoveredCopy1 ? 'filled' : 'default'}
-									onClick={() => handleCopy(__JSON)}
+									onClick={() => handleCopy(__OBJECT)}
 									// className={cn('bg-blue-500 text-white border border-blue-500 transition-colors', 'hover:bg-white hover:text-blue-500 hover:border-blue-500', { 'opacity-50 cursor-not-allowed': !encodeInput })}
 									disabled={!encodeInput}
 									px={10}
 									ref={refCopy1}
 								>
-									{copyStatus.type !== __JSON ? <TbCopy size={16} /> : <TbCopyCheck size={16} />}
+									{copyStatus.type !== __OBJECT ? <TbCopy size={16} /> : <TbCopyCheck size={16} />}
 								</Button>
 							</Tooltip>
 							<Tooltip label='Download'>
 								<Button
 									variant={hoveredDownload1 ? 'filled' : 'default'}
-									onClick={() => handleDownload(__JSON)}
+									onClick={() => handleDownload(__OBJECT)}
 									// className={cn('bg-blue-500 text-white border border-blue-500 transition-colors', 'hover:bg-white hover:text-blue-500 hover:border-blue-500', { 'opacity-50 cursor-not-allowed': !encodeInput })}
 									disabled={!encodeInput}
 									px={10}
@@ -363,7 +357,7 @@ export default function Base64() {
 						spacing={0}
 						gap={10}
 						justify='space-between'
-						hidden={!settings.includes(__JSON)}
+						hidden={!settings.includes(__OBJECT)}
 					>
 						<Group
 							spacing={0}
@@ -391,16 +385,16 @@ export default function Base64() {
 							</FileButton>
 
 							<Tooltip
-								label={showQRCode.includes(__JSON) ? 'QR Code is active' : 'QR Code'}
+								label={showQRCode.includes(__OBJECT) ? 'QR Code is active' : 'QR Code'}
 								withArrow
 								arrowSize={8}
 							>
 								<Button
-									variant={hoveredQr1 || showQRCode.includes(__JSON) ? 'filled' : 'default'}
-									// variant={showQRCode.includes(__JSON) ? 'filled' : 'default'}
-									onClick={() => handleQRCode(__JSON)}
+									variant={hoveredQr1 || showQRCode.includes(__OBJECT) ? 'filled' : 'default'}
+									// variant={showQRCode.includes(__OBJECT) ? 'filled' : 'default'}
+									onClick={() => handleQRCode(__OBJECT)}
 									className='text-black border-none rounded-md bg-transparent hover:text-blue-500 shadow-none'
-									leftSection={showQRCode.includes(__JSON) ? <TbCircleCheck size={18} /> : <TbQrcode size={18} />}
+									leftSection={showQRCode.includes(__OBJECT) ? <TbCircleCheck size={18} /> : <TbQrcode size={18} />}
 									ref={refQr1}
 								>
 									QR Code
@@ -416,19 +410,19 @@ export default function Base64() {
 						<div className='flex w-full gap-0 items-end'>
 							{/* Input */}
 							<Textarea
-								label='Object'
-								description='Converted object will appear here'
+								label='JSON'
+								description='Converted JSON will appear here'
 								size='md'
 								rows={10}
 								w={'100%'}
-								className={showQRCode.includes(__OBJECT) && qrValues[__OBJECT].length ? 'active-qr' : ''}
-								placeholder='Converted object will appear here'
+								className={showQRCode.includes(__JSON) && qrValues[__JSON].length ? 'active-qr' : ''}
+								placeholder='Converted JSON will appear here'
 								radius='md'
 								value={decodeInput}
 								error=''
 								onChange={(e) => {
-									if (autoSync[__OBJECT]) {
-										handleConversion(__OBJECT, e.target.value);
+									if (autoSync[__JSON]) {
+										handleConversion(__JSON, e.target.value);
 									}
 									setDecodeInput(e.target.value);
 								}}
@@ -454,15 +448,15 @@ export default function Base64() {
 									)
 								}
 							/>
-							{showQRCode.includes(__OBJECT) && qrValues[__OBJECT] && (
+							{showQRCode.includes(__JSON) && qrValues[__JSON] && (
 								<div className='border-t border-r border-b border-[#d9d9d9] rounded-tr-md rounded-br-md p-1.5'>
 									<QRCodeSVG
 										size={250}
-										value={qrValues[__OBJECT].slice(0, 1000)}
+										value={qrValues[__JSON].slice(0, 1000)}
 										level='L'
 										bordered={false}
-										status={qrValues[__OBJECT].length > 1000 ? 'length-error' : 'active'}
-										statusRender={(info) => qrCustomStatus(info, __OBJECT)}
+										status={qrValues[__JSON].length > 1000 ? 'length-error' : 'active'}
+										statusRender={(info) => qrCustomStatus(info, __JSON)}
 									/>
 								</div>
 							)}
@@ -505,30 +499,30 @@ export default function Base64() {
 						>
 							<Tooltip label='Settings'>
 								<Button
-									onClick={() => handleSettings(__OBJECT)}
+									onClick={() => handleSettings(__JSON)}
 									unstyled
-									c={settings.includes(__OBJECT) ? 'blue' : ''}
+									c={settings.includes(__JSON) ? 'blue' : ''}
 									p={10}
 								>
-									{settings.includes(__OBJECT) ? <TbSettingsMinus size={16} /> : <TbSettingsPlus size={16} />}
+									{settings.includes(__JSON) ? <TbSettingsMinus size={16} /> : <TbSettingsPlus size={16} />}
 								</Button>
 							</Tooltip>
-							<Tooltip label={copyStatus.type !== __OBJECT ? 'Copy' : copyStatus.isSuccess ? 'Copied' : copyStatus.hasError ? 'Error copying' : 'Copy'}>
+							<Tooltip label={copyStatus.type !== __JSON ? 'Copy' : copyStatus.isSuccess ? 'Copied' : copyStatus.hasError ? 'Error copying' : 'Copy'}>
 								<Button
 									variant={hoveredCopy2 ? 'filled' : 'default'}
-									onClick={() => handleCopy(__OBJECT)}
+									onClick={() => handleCopy(__JSON)}
 									// className={cn('bg-blue-500 text-white border border-blue-500 transition-colors', 'hover:bg-white hover:text-blue-500 hover:border-blue-500', { 'opacity-50 cursor-not-allowed': !decodeInput })}
 									disabled={!decodeInput}
 									px={10}
 									ref={refCopy2}
 								>
-									{copyStatus.type !== __OBJECT ? <TbCopy size={16} /> : <TbCopyCheck size={16} />}
+									{copyStatus.type !== __JSON ? <TbCopy size={16} /> : <TbCopyCheck size={16} />}
 								</Button>
 							</Tooltip>
 							<Tooltip label='Download'>
 								<Button
 									variant={hoveredDownload2 ? 'filled' : 'default'}
-									onClick={() => handleDownload(__OBJECT)}
+									onClick={() => handleDownload(__JSON)}
 									// className={cn('bg-blue-500 text-white border border-blue-500 transition-colors', 'hover:bg-white hover:text-blue-500 hover:border-blue-500', { 'opacity-50 cursor-not-allowed': !decodeInput })}
 									disabled={!decodeInput}
 									px={10}
@@ -543,7 +537,7 @@ export default function Base64() {
 						spacing={0}
 						gap={10}
 						justify='space-between'
-						hidden={!settings.includes(__OBJECT)}
+						hidden={!settings.includes(__JSON)}
 					>
 						<Group
 							spacing={0}
@@ -576,16 +570,16 @@ export default function Base64() {
 							gap={10}
 						>
 							<Tooltip
-								label={showQRCode.includes(__OBJECT) ? 'QR Code is active' : 'QR Code'}
+								label={showQRCode.includes(__JSON) ? 'QR Code is active' : 'QR Code'}
 								withArrow
 								arrowSize={8}
 							>
 								<Button
-									variant={hoveredQr2 || showQRCode.includes(__OBJECT) ? 'filled' : 'default'}
-									// variant={showQRCode.includes(__OBJECT) ? 'filled' : 'default'}
-									onClick={() => handleQRCode(__OBJECT)}
+									variant={hoveredQr2 || showQRCode.includes(__JSON) ? 'filled' : 'default'}
+									// variant={showQRCode.includes(__JSON) ? 'filled' : 'default'}
+									onClick={() => handleQRCode(__JSON)}
 									className='text-black border-none rounded-md bg-transparent hover:text-blue-500 shadow-none'
-									leftSection={showQRCode.includes(__OBJECT) ? <TbCircleCheck size={18} /> : <TbQrcode size={18} />}
+									leftSection={showQRCode.includes(__JSON) ? <TbCircleCheck size={18} /> : <TbQrcode size={18} />}
 									ref={refQr2}
 								>
 									QR Code
