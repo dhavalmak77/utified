@@ -289,7 +289,6 @@ export default function Base64() {
 									level='L'
 									bordered='false'
 									status={qrValues[__OBJECT].length > 1000 ? 'length-error' : 'active'}
-									statusRender={(info) => qrCustomStatus(info, __OBJECT)}
 								/>
 							</div>
 						)}
@@ -456,7 +455,6 @@ export default function Base64() {
 										level='L'
 										bordered='false'
 										status={qrValues[__JSON].length > 1000 ? 'length-error' : 'active'}
-										statusRender={(info) => qrCustomStatus(info, __JSON)}
 									/>
 								</div>
 							)}

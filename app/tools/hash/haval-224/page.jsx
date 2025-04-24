@@ -276,7 +276,7 @@ export default function Haval224Page() {
 									level='L'
 									bordered='false'
 									status={qrValues[INPUT].length > 1000 ? 'length-error' : 'active'}
-									statusRender={(info) => qrCustomStatus(info, INPUT)}
+									
 								/>
 							</div>
 						)}
@@ -451,9 +451,8 @@ export default function Haval224Page() {
 										value={qrValues[HASH].slice(0, 1000)}
 										level='L'
 										bordered='false'
-										status={qrValues[HASH].length > 1000 ? 'length-error' : 'active'}
-										statusRender={(info) => qrCustomStatus(info, HASH)}
-									/>
+										status={qrValues[HASH].length > 1000 ? 'length-error' : 'active'
+									
 								</div>
 							)}
 						</div>

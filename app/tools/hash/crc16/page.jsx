@@ -267,7 +267,6 @@ export default function CRC16Page() {
 									level='L'
 									bordered='false'
 									status={qrValues[INPUT].length > 1000 ? 'length-error' : 'active'}
-									statusRender={(info) => qrCustomStatus(info, INPUT)}
 								/>
 							</div>
 						)}
@@ -429,7 +428,6 @@ export default function CRC16Page() {
 										level='L'
 										bordered='false'
 										status={qrValues[HASH].length > 1000 ? 'length-error' : 'active'}
-										statusRender={(info) => qrCustomStatus(info, HASH)}
 									/>
 								</div>
 							)}
