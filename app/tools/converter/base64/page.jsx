@@ -24,8 +24,6 @@ const DECODE = 'DECODE';
 const maxQrCodeLength = 2953;
 
 export default function Base64() {
-	const theme = useMantineTheme();
-
 	const [encodeInput, setEncodeInput] = useState('');
 	const [decodeInput, setDecodeInput] = useState('');
 	const [qrValues, setQrValues] = useState({ [ENCODE]: '', [DECODE]: '' });

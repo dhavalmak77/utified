@@ -33,7 +33,7 @@
 'use client';
 import Link from 'next/link';
 import { Anchor, Breadcrumbs, Text } from '@mantine/core';
-import { useBreadcrumbs } from '@/app/_hooks/useBreadcrumbs';
+import { useUtBreadcrumbs } from '@/app/_hooks/useUtBreadcrumbs';
 import styled from 'styled-components';
 
 const BlueLink = styled.a`
@@ -45,7 +45,7 @@ const BlueLink = styled.a`
 `;
 
 export default function AppBreadcrumbs() {
-	let items = useBreadcrumbs();
+	let items = useUtBreadcrumbs();
 
 	if (!items.length) return null;
 
