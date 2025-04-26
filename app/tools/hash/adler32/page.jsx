@@ -3,9 +3,9 @@
 import { PageWrapper } from '@/app/_components/layout/page-wrapper';
 import { ActionIcon, Button, Checkbox, FileButton, Group, Text, Textarea, Tooltip } from '@mantine/core';
 import { QRCodeSVG } from 'qrcode.react';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 import { LuUpload, LuX } from 'react-icons/lu';
-import { TbCircleCheck, TbCopy, TbCopyCheck, TbDownload, TbQrcode, TbQrcodeOff, TbSettings, TbSettingsMinus, TbSettingsFilled, TbSettingsPlus } from 'react-icons/tb';
+import { TbCircleCheck, TbQrcode, TbSettingsMinus, TbSettingsPlus } from 'react-icons/tb';
 import generatePhpHash from '@/app/_lib/utils/generate-php-hash';
 import { useUtToolsHistory } from '@/hooks/useUtToolsHistory';
 import { UndoRedoButtons } from '@/components/common/UndoRedoButtons';
@@ -18,7 +18,7 @@ const currentTool = 'adler32';
 let timeoutId;
 
 export default function Adler32Page() {
-	const { hovers, refs } = useUtHovers(['inputUploadFile', 'inputCopy', 'outputCopy', 'inputQr', 'outputQr', 'inputDownload', 'outputDownload']);
+	const { hovers, refs } = useUtHovers(['inputUploadFile', 'inputQr', 'outputQr']);
 	const { inputValue, setInputValue, outputValue, setOutputValue, settings, handleSettings, autoSync, handleAutoSync, qrValues, showQRCode, handleQRCode, loading, setLoading, addToHistory, undo, redo, canUndo, canRedo, error, setError } = useUtToolsHistory();
 
 	const generateHash = (data) => {
