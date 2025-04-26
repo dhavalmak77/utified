@@ -1,6 +1,5 @@
 'use client';
 
-import './style.css';
 import { PageWrapper } from '@/app/_components/layout/page-wrapper';
 import { ActionIcon, Button, Checkbox, FileButton, Group, Select, Text, Textarea, Tooltip } from '@mantine/core';
 import { useHover } from '@mantine/hooks';

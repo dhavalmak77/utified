@@ -1,7 +1,6 @@
 'use client';
 
 import crypto from 'crypto';
-import './style.css';
 import { PageWrapper } from '@/app/_components/layout/page-wrapper';
 import cn from '@/app/_lib/utils/cn';
 import { ActionIcon, Box, Button, Checkbox, FileButton, Group, Select, Text, Textarea, Tooltip, useMantineTheme } from '@mantine/core';
