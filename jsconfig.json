@@ -3,6 +3,12 @@
 		"paths": {
 			"@/*": [
 				"./*"
+			],
+			"@/hooks/*": [
+				"./app/_hooks/*"
+			],
+			"@/components/*": [
+				"./app/_components/*"
 			]
 		}
 	}

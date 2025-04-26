@@ -2,105 +2,24 @@
 
 import { PageWrapper } from '@/app/_components/layout/page-wrapper';
 import { ActionIcon, Button, Checkbox, FileButton, Group, Text, Textarea, Tooltip } from '@mantine/core';
-import { useHover } from '@mantine/hooks';
 import { QRCodeSVG } from 'qrcode.react';
 import { useCallback, useEffect, useState } from 'react';
 import { LuUpload, LuX } from 'react-icons/lu';
 import { TbCircleCheck, TbCopy, TbCopyCheck, TbDownload, TbQrcode, TbQrcodeOff, TbSettings, TbSettingsMinus, TbSettingsFilled, TbSettingsPlus } from 'react-icons/tb';
-import { AiOutlineUndo, AiOutlineRedo } from 'react-icons/ai';
 import generatePhpHash from '@/app/_lib/utils/generate-php-hash';
+import { useUtToolsHistory } from '@/hooks/useUtToolsHistory';
+import { UndoRedoButtons } from '@/components/common/UndoRedoButtons';
+import useUtHovers from '@/hooks/useUtHovers';
+import CopyButton from '@/app/_components/common/CopyButton';
+import DownloadButton from '@/app/_components/common/DownloadButton';
 
-const initialCopyStatus = { type: '', isSuccess: false, hasError: false, toggle: false };
-const initialErrorState = { type: '', message: '' };
-
-const INPUT = 'Input';
-const HASH = 'Adler32';
-
+const maxQrCodeLength = 1000;
+const currentTool = 'adler32';
 let timeoutId;
 
-const maxQrCodeLength = 2953;
-
 export default function Adler32Page() {
-	const [input, setInput] = useState('');
-	const [hash, setHash] = useState('');
-	const [qrValues, setQrValues] = useState({ [INPUT]: '', [HASH]: '' });
-	const [error, setError] = useState(initialErrorState);
-	const [copyStatus, setCopyStatus] = useState(initialCopyStatus);
-	const [settings, setSettings] = useState([INPUT]);
-	const [showQRCode, setShowQRCode] = useState([]);
-	const [autoSync, setAutoSync] = useState({ [INPUT]: false, [HASH]: false });
-	const [history, setHistory] = useState([]);
-	const [currentIndex, setCurrentIndex] = useState(-1);
-	const [loading, setLoading] = useState(false);
-
-	const { hovered: hoveredTakeOutputAsInput, ref: refTakeOutputAsInput } = useHover();
-	const { hovered: hoveredUploadFile1, ref: refUploadFile1 } = useHover();
-	const { hovered: hoveredUploadFile2, ref: refUploadFile2 } = useHover();
-	const { hovered: hoveredCopy1, ref: refCopy1 } = useHover();
-	const { hovered: hoveredCopy2, ref: refCopy2 } = useHover();
-	const { hovered: hoveredQr1, ref: refQr1 } = useHover();
-	const { hovered: hoveredQr2, ref: refQr2 } = useHover();
-	const { hovered: hoveredDownload1, ref: refDownload1 } = useHover();
-	const { hovered: hoveredDownload2, ref: refDownload2 } = useHover();
-	const { hovered: hoveredClearBoth, ref: refClearBoth } = useHover();
-	const { hovered: hoveredUndo2, ref: refUndo2 } = useHover();
-	const { hovered: hoveredRedo2, ref: refRedo2 } = useHover();
-
-	useEffect(() => {
-		if (copyStatus.hasError || copyStatus.isSuccess) {
-			const timeoutId = setTimeout(() => {
-				setCopyStatus(initialCopyStatus);
-			}, 5000);
-
-			return () => clearTimeout(timeoutId);
-		}
-	}, [copyStatus]);
-
-	useEffect(() => {
-		if (showQRCode.includes(INPUT) || showQRCode.includes(HASH)) {
-			const qrCodeId = setTimeout(() => {
-				setQrValues({
-					[INPUT]: input,
-					[HASH]: hash,
-				});
-			}, 750);
-
-			return () => clearTimeout(qrCodeId);
-		}
-	}, [input, hash, showQRCode]);
-
-	const handleQRCode = (type) => {
-		setShowQRCode((prev) => (prev.includes(type) ? prev.filter((el) => el !== type) : [...prev, type]));
-	};
-
-	const handleSettings = useCallback((type) => {
-		setSettings((prev) => (prev.includes(type) ? prev.filter((el) => el !== type) : [...prev, type]));
-	}, []);
-
-	const addToHistory = (newState) => {
-		const updatedHistory = history.slice(0, currentIndex + 1);
-		updatedHistory.push(newState);
-		setHistory(updatedHistory);
-		setCurrentIndex(updatedHistory.length - 1);
-	};
-
-	const handleUndo = () => {
-		if (currentIndex > 0) {
-			const prevState = history[currentIndex - 1];
-			setInput(prevState.input);
-			setHash(prevState.hash);
-			setCurrentIndex(currentIndex - 1);
-		}
-	};
-
-	const handleRedo = () => {
-		if (currentIndex < history.length - 1) {
-			const nextState = history[currentIndex + 1];
-			setInput(nextState.input);
-			setHash(nextState.hash);
-			setCurrentIndex(currentIndex + 1);
-		}
-	};
+	const { hovers, refs } = useUtHovers(['inputUploadFile', 'inputCopy', 'outputCopy', 'inputQr', 'outputQr', 'inputDownload', 'outputDownload']);
+	const { inputValue, setInputValue, outputValue, setOutputValue, settings, handleSettings, autoSync, handleAutoSync, qrValues, showQRCode, handleQRCode, loading, setLoading, addToHistory, undo, redo, canUndo, canRedo, error, setError } = useUtToolsHistory();
 
 	const generateHash = (data) => {
 		clearTimeout(timeoutId);
@@ -113,102 +32,33 @@ export default function Adler32Page() {
 
 				// Check if the status is 'success' before accessing data
 				if (resultHash.status === 'success') {
-					setHash(resultHash.data); // Assuming resultHash.data is the hash string
-					setError('');
-					addToHistory({ input: data, hash: resultHash.data });
+					setOutputValue(resultHash.data); // Assuming resultHash.data is the outputValue string
+					setError({ input: '' });
+					addToHistory(data, resultHash.data);
 				} else {
 					throw new Error(resultHash.data || 'Hash generation failed.');
 				}
 			} catch (error) {
-				setError({ type: 'INPUT', message: error.message });
+				setError({ input: error.message });
 			} finally {
 				setLoading(false);
 			}
 		}, 500);
 	};
 
-	const handleClear = useCallback(() => {
-		setError(initialErrorState);
-		setInput('');
-		setHash('');
-	}, []);
-
-	const handleCopy = useCallback(
-		async (conversionType) => {
-			try {
-				const textToCopy = conversionType === INPUT ? input : hash;
-				await navigator.clipboard.writeText(textToCopy);
-				setCopyStatus({ type: conversionType, isSuccess: true, hasError: false, toggle: !copyStatus.toggle });
-			} catch (err) {
-				console.error('Failed to copy text: ', err);
-				setCopyStatus({ type: conversionType, isSuccess: false, hasError: true, toggle: !copyStatus.toggle });
-			}
-		},
-		[copyStatus.toggle, input, hash]
-	);
-
-	const handleDownload = useCallback(
-		(typeIdentity) => {
-			const result = typeIdentity === INPUT ? input : hash;
-			const blob = new Blob([result], { type: 'text/plain;charset=utf-8' });
-			const url = URL.createObjectURL(blob);
-			const a = document.createElement('a');
-			a.href = url;
-			a.download = `${typeIdentity.toLowerCase()}.txt`;
-			document.body.appendChild(a);
-			a.click();
-			document.body.removeChild(a);
-			URL.revokeObjectURL(url);
-		},
-		[input, hash]
-	);
-
 	const handleFileUpload = useCallback(
 		(type, file) => {
 			const reader = new FileReader();
 			reader.onload = (e) => {
-				setInput(e.target.result);
+				setInputValue(e.target.result);
 
-				if (autoSync) {
+				if (autoSync.input) {
 					generateHash(e.target.result);
 				}
 			};
 			reader.readAsText(file);
 		},
 		[generateHash]
-	);
-
-	const qrCustomStatus = (info, type) => {
-		if (info.status.includes('length-error')) {
-			return (
-				<div className='text-red-600'>
-					<p>
-						<ExclamationCircleOutlined /> Input too long (limit 1000 chars).
-					</p>
-					<p>
-						<Button
-							type='link'
-							onClick={() => handleQRCode(type)}
-						>
-							Dismiss QR <QrcodeOutlined />
-						</Button>
-					</p>
-				</div>
-			);
-		}
-
-		return null;
-	};
-
-	let inputLabel = (
-		<p className='w-full flex justify-between'>
-			<span>Text</span>
-		</p>
-	);
-	let outputLabel = (
-		<p className='w-full flex justify-between'>
-			<span>{`${HASH} hash`}</span>
-		</p>
 	);
 
 	return (
@@ -229,29 +79,29 @@ export default function Adler32Page() {
 							size='md'
 							rows={5}
 							w={'100%'}
-							className={showQRCode.includes(INPUT) && qrValues[INPUT].length ? 'active-qr' : ''}
+							className={showQRCode.input && qrValues.input.length ? 'active-qr' : ''}
 							placeholder='Write text or upload a file'
 							radius='md'
-							value={input}
+							value={inputValue}
 							onChange={(e) => {
-								if (autoSync[INPUT]) {
+								if (autoSync.input) {
 									generateHash(e.target.value);
 								}
-								setInput(e.target.value);
+								setInputValue(e.target.value);
 							}}
 							error=''
 							rightSectionWidth={24}
 							rightSection={
-								input && (
+								inputValue && (
 									<div className='flex items-start justify-end h-full pt-2 pr-2.5'>
 										<Tooltip
-											label='Clear input'
+											label='Clear inputValue'
 											withArrow
 										>
 											<ActionIcon
 												variant='subtle'
 												color='gray'
-												onClick={() => setInput('')}
+												onClick={() => setInputValue('')}
 												size='sm'
 											>
 												<LuX size={16} />
@@ -261,35 +111,35 @@ export default function Adler32Page() {
 								)
 							}
 						/>
-						{showQRCode.includes(INPUT) && qrValues[INPUT] && (
+						{showQRCode.input && qrValues.input && (
 							<div className='border-t border-r border-b border-[#d9d9d9] rounded-tr-md rounded-br-md p-1.5'>
 								<QRCodeSVG
 									size={126}
-									value={qrValues[INPUT].slice(0, 1000)}
+									value={qrValues.input.slice(0, 1000)}
 									level='L'
 									bordered='false'
-									status={qrValues[INPUT].length > 1000 ? 'length-error' : 'active'}
+									status={qrValues.input.length > 1000 ? 'length-error' : 'active'}
 								/>
 							</div>
 						)}
 					</div>
-					{error.type === INPUT && <Text type='danger'>{error.message}</Text>}
+					{error.input.length && <Text type='danger'>{error.input}</Text>}
 
 					<Group justify='space-between'>
 						<Group>
 							<Button
 								variant='filled'
-								// className={cn(!autoSync[INPUT] && 'rounded-md py-2 border-blue-500 text-blue-500 bg-transparent hover:bg-blue-500 hover:text-white')}
-								disabled={autoSync[INPUT]}
-								onClick={() => generateHash(input)}
+								// className={cn(!autoSync.input && 'rounded-md py-2 border-blue-500 text-blue-500 bg-transparent hover:bg-blue-500 hover:text-white')}
+								disabled={autoSync.input}
+								onClick={() => generateHash(inputValue)}
 								loading={loading}
 							>
 								Generate
 							</Button>
 							<Checkbox
 								label='Auto Generate'
-								checked={autoSync[INPUT]}
-								onChange={(e) => setAutoSync((prev) => ({ ...prev, [INPUT]: !prev[INPUT] }))}
+								checked={autoSync.input}
+								onChange={(e) => handleAutoSync('input')}
 								style={{ alignSelf: 'center' }}
 							/>
 						</Group>
@@ -299,45 +149,31 @@ export default function Adler32Page() {
 						>
 							<Tooltip label='Settings'>
 								<Button
-									onClick={() => handleSettings(INPUT)}
+									onClick={() => handleSettings('input')}
 									unstyled
-									c={settings.includes(INPUT) ? 'blue' : ''}
+									c={settings.input ? 'blue' : ''}
 									p={10}
 								>
-									{settings.includes(INPUT) ? <TbSettingsMinus size={16} /> : <TbSettingsPlus size={16} />}
+									{settings.input ? <TbSettingsMinus size={16} /> : <TbSettingsPlus size={16} />}
 								</Button>
 							</Tooltip>
-							<Tooltip label={copyStatus.type !== INPUT ? 'Copy' : copyStatus.isSuccess ? 'Copied' : copyStatus.hasError ? 'Error copying' : 'Copy'}>
-								<Button
-									variant={hoveredCopy1 ? 'filled' : 'default'}
-									onClick={() => handleCopy(INPUT)}
-									// className={cn('bg-blue-500 text-white border border-blue-500 transition-colors', 'hover:bg-white hover:text-blue-500 hover:border-blue-500', { 'opacity-50 cursor-not-allowed': !input })}
-									disabled={!input}
-									px={10}
-									ref={refCopy1}
-								>
-									{copyStatus.type !== INPUT ? <TbCopy size={16} /> : <TbCopyCheck size={16} />}
-								</Button>
-							</Tooltip>
-							<Tooltip label='Download'>
-								<Button
-									variant={hoveredDownload1 ? 'filled' : 'default'}
-									onClick={() => handleDownload(INPUT)}
-									// className={cn('bg-blue-500 text-white border border-blue-500 transition-colors', 'hover:bg-white hover:text-blue-500 hover:border-blue-500', { 'opacity-50 cursor-not-allowed': !input })}
-									disabled={!input}
-									px={10}
-									ref={refDownload1}
-								>
-									<TbDownload size={16} />
-								</Button>
-							</Tooltip>
+							<CopyButton
+								textToCopy={inputValue}
+								disabled={!inputValue}
+							/>
+							<DownloadButton
+								data={inputValue}
+								disabled={!inputValue}
+								fileExtension='txt'
+								fileNamePrefix={currentTool + '_input'}
+							/>
 						</Group>
 					</Group>
 					<Group
 						spacing={0}
 						gap={10}
 						justify='space-between'
-						hidden={!settings.includes(INPUT)}
+						hidden={!settings.input}
 					>
 						<Group
 							spacing={0}
@@ -349,14 +185,14 @@ export default function Adler32Page() {
 							gap={10}
 						>
 							<FileButton
-								onChange={(e) => handleFileUpload(INPUT, e)}
+								onChange={(e) => handleFileUpload('input', e)}
 								accept='image/png,image/jpeg'
 							>
 								{(props) => (
 									<Button
-										variant={hoveredUploadFile1 ? 'filled' : 'default'}
+										variant={hovers.inputUploadFile ? 'filled' : 'default'}
 										leftSection={<LuUpload />}
-										ref={refUploadFile1}
+										{...refs.inputUploadFile}
 										{...props}
 									>
 										Upload File
@@ -365,16 +201,20 @@ export default function Adler32Page() {
 							</FileButton>
 
 							<Tooltip
-								label={showQRCode.includes(INPUT) ? 'QR Code is active' : 'QR Code'}
+								// label={showQRCode.input ? 'QR Code is active' : 'QR Code'}
+								label={showQRCode.input ? 'QR Code is active' : 'QR Code'}
 								withArrow
 								arrowSize={8}
 							>
 								<Button
-									variant={hoveredQr1 || showQRCode.includes(INPUT) ? 'filled' : 'default'}
-									onClick={() => handleQRCode(INPUT)}
+									variant={hovers.inputQr || showQRCode.input ? 'filled' : 'default'}
+									onClick={() => {
+										// handleShowInputQR();
+										handleQRCode('input');
+									}}
 									className='text-black border-none rounded-md bg-transparent hover:text-blue-500 shadow-none'
-									leftSection={showQRCode.includes(INPUT) ? <TbCircleCheck size={18} /> : <TbQrcode size={18} />}
-									ref={refQr1}
+									leftSection={showQRCode.input ? <TbCircleCheck size={18} /> : <TbQrcode size={18} />}
+									{...refs.inputQr}
 								>
 									QR Code
 								</Button>
@@ -394,26 +234,26 @@ export default function Adler32Page() {
 								size='md'
 								rows={5}
 								w={'100%'}
-								className={showQRCode.includes(HASH) && qrValues[HASH].length ? 'active-qr' : ''}
+								className={showQRCode.output && qrValues.output.length ? 'active-qr' : ''}
 								placeholder='Converted text will appear here'
 								radius='md'
-								value={hash}
+								value={outputValue}
 								error=''
 								onChange={(e) => {
-									setHash(e.target.value);
+									setOutputValue(e.target.value);
 								}}
 								rightSectionWidth={24}
 								rightSection={
-									hash && (
+									outputValue && (
 										<div className='flex items-start justify-end h-full pt-2 pr-2.5'>
 											<Tooltip
-												label='Clear input'
+												label='Clear inputValue'
 												withArrow
 											>
 												<ActionIcon
 													variant='subtle'
 													color='gray'
-													onClick={() => setHash('')}
+													onClick={() => setOutputValue('')}
 													size='sm'
 												>
 													<LuX size={16} />
@@ -423,43 +263,29 @@ export default function Adler32Page() {
 									)
 								}
 							/>
-							{showQRCode.includes(HASH) && qrValues[HASH] && (
+							{showQRCode.output && qrValues.output && (
 								<div className='border-t border-r border-b border-[#d9d9d9] rounded-tr-md rounded-br-md p-1.5'>
 									<QRCodeSVG
 										size={126}
-										value={qrValues[HASH].slice(0, 1000)}
+										value={qrValues.output.slice(0, 1000)}
 										level='L'
 										bordered='false'
-										status={qrValues[HASH].length > 1000 ? 'length-error' : 'active'}
+										status={qrValues.output.length > 1000 ? 'length-error' : 'active'}
 									/>
 								</div>
 							)}
 						</div>
 					</Group>
-					{error.type === HASH && <Text type='danger'>{error.message}</Text>}
+					{error.output.length && <Text type='danger'>{error.output}</Text>}
 
 					<Group justify='space-between'>
 						<Group>
-							<Button
-								variant={hoveredUndo2 ? 'filled' : 'default'}
-								// className={cn(!autoSync[HASH] && 'rounded-md py-2 border-blue-500 text-blue-500 bg-transparent hover:bg-blue-500 hover:text-white')}
-								onClick={handleUndo}
-								leftSection={<AiOutlineUndo size={16} />}
-								disabled={currentIndex <= 0}
-								ref={refUndo2}
-							>
-								Undo
-							</Button>
-							<Button
-								variant={hoveredRedo2 ? 'filled' : 'default'}
-								// className={cn(!autoSync[HASH] && 'rounded-md py-2 border-blue-500 text-blue-500 bg-transparent hover:bg-blue-500 hover:text-white')}
-								leftSection={<AiOutlineRedo size={16} />}
-								onClick={handleRedo}
-								disabled={currentIndex >= history.length - 1}
-								ref={refRedo2}
-							>
-								Redo
-							</Button>
+							<UndoRedoButtons
+								onUndo={undo}
+								onRedo={redo}
+								canUndo={canUndo}
+								canRedo={canRedo}
+							/>
 						</Group>
 						<Group
 							spacing={0}
@@ -467,45 +293,31 @@ export default function Adler32Page() {
 						>
 							<Tooltip label='Settings'>
 								<Button
-									onClick={() => handleSettings(HASH)}
+									onClick={() => handleSettings('output')}
 									unstyled
-									c={settings.includes(HASH) ? 'blue' : ''}
+									c={settings.output ? 'blue' : ''}
 									p={10}
 								>
-									{settings.includes(HASH) ? <TbSettingsMinus size={16} /> : <TbSettingsPlus size={16} />}
+									{settings.output ? <TbSettingsMinus size={16} /> : <TbSettingsPlus size={16} />}
 								</Button>
 							</Tooltip>
-							<Tooltip label={copyStatus.type !== HASH ? 'Copy' : copyStatus.isSuccess ? 'Copied' : copyStatus.hasError ? 'Error copying' : 'Copy'}>
-								<Button
-									variant={hoveredCopy2 ? 'filled' : 'default'}
-									onClick={() => handleCopy(HASH)}
-									// className={cn('bg-blue-500 text-white border border-blue-500 transition-colors', 'hover:bg-white hover:text-blue-500 hover:border-blue-500', { 'opacity-50 cursor-not-allowed': !hash })}
-									disabled={!hash}
-									px={10}
-									ref={refCopy2}
-								>
-									{copyStatus.type !== HASH ? <TbCopy size={16} /> : <TbCopyCheck size={16} />}
-								</Button>
-							</Tooltip>
-							<Tooltip label='Download'>
-								<Button
-									variant={hoveredDownload2 ? 'filled' : 'default'}
-									onClick={() => handleDownload(HASH)}
-									// className={cn('bg-blue-500 text-white border border-blue-500 transition-colors', 'hover:bg-white hover:text-blue-500 hover:border-blue-500', { 'opacity-50 cursor-not-allowed': !hash })}
-									disabled={!hash}
-									px={10}
-									ref={refDownload2}
-								>
-									<TbDownload size={16} />
-								</Button>
-							</Tooltip>
+							<CopyButton
+								textToCopy={outputValue}
+								disabled={!outputValue}
+							/>
+							<DownloadButton
+								data={outputValue}
+								disabled={!outputValue}
+								fileExtension='txt'
+								fileNamePrefix={currentTool + '_output'}
+							/>
 						</Group>
 					</Group>
 					<Group
 						spacing={0}
 						gap={10}
 						justify='space-between'
-						hidden={!settings.includes(HASH)}
+						hidden={!settings.output}
 					>
 						<Group
 							spacing={0}
@@ -517,16 +329,16 @@ export default function Adler32Page() {
 							gap={10}
 						>
 							<Tooltip
-								label={showQRCode.includes(HASH) ? 'QR Code is active' : 'QR Code'}
+								label={showQRCode.output ? 'QR Code is active' : 'QR Code'}
 								withArrow
 								arrowSize={8}
 							>
 								<Button
-									variant={hoveredQr2 || showQRCode.includes(HASH) ? 'filled' : 'default'}
-									onClick={() => handleQRCode(HASH)}
+									variant={hovers.outputQr || showQRCode.output ? 'filled' : 'default'}
+									onClick={() => handleQRCode('output')}
 									className='text-black border-none rounded-md bg-transparent hover:text-blue-500 shadow-none'
-									leftSection={showQRCode.includes(HASH) ? <TbCircleCheck size={18} /> : <TbQrcode size={18} />}
-									ref={refQr2}
+									leftSection={showQRCode.output ? <TbCircleCheck size={18} /> : <TbQrcode size={18} />}
+									{...refs.outputQr}
 								>
 									QR Code
 								</Button>
@@ -535,19 +347,6 @@ export default function Adler32Page() {
 					</Group>
 				</div>
 			</div>
-
-			{/* <div className='flex flex-wrap gap-3 mt-4'>
-				{caseButtons.map((el) => (
-					<Button
-						key={el.value}
-						variant={caseType === el.value ? 'filled' : 'default'}
-						className={cn('rounded-md px-4 py-2')}
-						onClick={() => handleConvert(el.value, text)}
-					>
-						{el.label}
-					</Button>
-				))}
-			</div> */}
 		</PageWrapper>
 	);
 }

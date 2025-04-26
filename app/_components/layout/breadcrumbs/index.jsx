@@ -33,7 +33,7 @@
 'use client';
 import Link from 'next/link';
 import { Anchor, Breadcrumbs, Text } from '@mantine/core';
-import { useUtBreadcrumbs } from '@/app/_hooks/useUtBreadcrumbs';
+import { useUtBreadcrumbs } from '@/hooks/useBreadcrumbs';
 import styled from 'styled-components';
 
 const BlueLink = styled.a`
