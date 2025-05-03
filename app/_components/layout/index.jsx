@@ -1,6 +1,6 @@
 'use client';
 
-import { AppShell } from '@mantine/core';
+import { AppShell, useMantineColorScheme } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import AppHeader from './header';
 import AppSiderLeft from './sidebar-left';
@@ -12,6 +12,9 @@ import { useEffect } from 'react';
 export const AppLayout = ({ children }) => {
 	const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
 	const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
+	const { colorScheme, setColorScheme } = useMantineColorScheme({
+		keepTransitions: true,
+	});
 
 	const path = usePathname();
 	// const breadcrumbItems = breadcrumbPath(HEADER_NAVIGATION, path);

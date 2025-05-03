@@ -4,6 +4,8 @@
 @tailwind components;
 @tailwind utilities;
 
+/* @custom-variant dark (&:where(.dark, .dark *)); */
+
 /* :root {
 	--background: #ffffff;
 	--foreground: #171717;
@@ -43,6 +45,11 @@ textarea::-webkit-scrollbar-thumb {
 textarea::-webkit-scrollbar-track {
 	background: transparent;
 } */
+
+/* Textarea hover color */
+textarea:hover {
+	border-color: var(--input-bd-focus);
+}
 
 /* Custom textarea scrollbar style */
 textarea {

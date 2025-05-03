@@ -2,7 +2,7 @@ import { Button, Group } from '@mantine/core';
 import { AiOutlineUndo, AiOutlineRedo } from 'react-icons/ai';
 import { useHover } from '@mantine/hooks';
 
-export function UndoRedoButtons({ onUndo, onRedo, canUndo, canRedo }) {
+export default function UndoRedoButtons({ onUndo, onRedo, canUndo, canRedo }) {
 	const { hovered: hoveredUndo, ref: refUndo } = useHover();
 	const { hovered: hoveredRedo, ref: refRedo } = useHover();
 

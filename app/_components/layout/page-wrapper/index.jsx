@@ -38,7 +38,8 @@ export const PageWrapper = ({
 	return (
 		<>
 			<AppShell.Main className='flex flex-col min-h-screen justify-between'>
-				<div className='flex flex-col justify-between md:flex-row w-full h-full'>
+				{/* <div className='flex flex-col justify-between md:flex-row w-full h-full'> */}
+				<div className='flex md:flex-row flex-col w-full flex-1'>
 					<div className={cn('w-full px-4 pt-2 pb-4', breadcrumbs && 'pt-4', className)}>
 						{/* Breadcrumbs */}
 						{breadcrumbs && <AppBreadcrumbs />}
@@ -76,7 +77,6 @@ export const PageWrapper = ({
 		</>
 	);
 };
-
 
 // export const PageWrapper = ({
 // 	children,

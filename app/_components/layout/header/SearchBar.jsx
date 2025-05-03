@@ -1,9 +1,12 @@
-import { Input, Text } from '@mantine/core';
+import { Input, Text, useMantineTheme } from '@mantine/core';
 import { useEffect, useRef, useState } from 'react';
 import { TbSearch } from 'react-icons/tb';
 import { SearchModal } from './SearchModal';
+import { useMediaQuery } from '@mantine/hooks';
+import useResponsive from '@/app/_hooks/useResponsive';
 
 export const SearchBar = ({ onFocus }) => {
+	const responsiveSize = useResponsive();
 	const [isOpen, setIsOpen] = useState(false);
 	const inputRef = useRef(null);
 
@@ -21,9 +24,15 @@ export const SearchBar = ({ onFocus }) => {
 		return () => window.removeEventListener('keydown', handleKeyDown);
 	}, []);
 
+	// // Hide search bar on small screens
+	// if (responsiveSize.xs) {
+	// 	return null;
+	// }
+
 	return (
 		<>
 			<Input
+				visibleFrom='sm'
 				onFocus={() => {
 					setIsOpen(true);
 					inputRef.current?.blur();

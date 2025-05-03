@@ -1,16 +1,26 @@
 import { useState, useCallback, useEffect } from 'react';
 
+const initialError = { input: '', output: '' };
+
 export function useUtToolsHistory(initialInput = '', initialOutput = '') {
 	const [inputValue, setInputValue] = useState(initialInput);
 	const [outputValue, setOutputValue] = useState(initialOutput);
 	const [autoSync, setAutoSync] = useState({ input: false, output: false });
-	const [settings, setSettings] = useState({ input: true, output: false });
+	const [settings, setSettings] = useState({ input: false, output: false });
 	const [qrValues, setQrValues] = useState({ input: '', output: '' });
 	const [showQRCode, setShowQRCode] = useState({ input: false, output: false });
 	const [history, setHistory] = useState([]);
 	const [currentIndex, setCurrentIndex] = useState(-1);
 	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState({ input: '', output: '' });
+	const [error, setError] = useState(initialError);
+
+	const addError = ({ type, message }) => {
+		setError((prev) => ({ ...prev, [type]: message }));
+	};
+
+	const clearError = () => {
+		setError(initialError);
+	}
 
 	useEffect(() => {
 		if (showQRCode.input || showQRCode.output) {
@@ -22,15 +32,15 @@ export function useUtToolsHistory(initialInput = '', initialOutput = '') {
 		}
 	}, [inputValue, outputValue, showQRCode]);
 
-	const handleSettings = (type) => {
+	const toggleSettings = (type) => {
 		setSettings((prev) => ({ ...prev, [type]: !prev[type] }));
 	};
 
-	const handleAutoSync = (type) => {
+	const toggleAutoSync = (type) => {
 		setAutoSync((prev) => ({ ...prev, [type]: !prev[type] }));
 	}
 
-	const handleQRCode = (type) => {
+	const toggleQRCode = (type) => {
 		setShowQRCode((prev) => ({ ...prev, [type]: !prev[type] }));
 	};
 
@@ -79,13 +89,13 @@ export function useUtToolsHistory(initialInput = '', initialOutput = '') {
 		outputValue,
 		setOutputValue,
 		settings,
-		handleSettings,
+		toggleSettings,
 		autoSync,
-		handleAutoSync,
+		toggleAutoSync,
 		qrValues,
 		setQrValues,
 		showQRCode,
-		handleQRCode,
+		toggleQRCode,
 		loading,
 		setLoading,
 		addToHistory,
@@ -94,6 +104,7 @@ export function useUtToolsHistory(initialInput = '', initialOutput = '') {
 		canUndo: currentIndex > 0,
 		canRedo: currentIndex < history.length - 1,
 		error,
-		setError,
+		addError,
+		clearError
 	};
 }

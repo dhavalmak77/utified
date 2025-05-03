@@ -55,7 +55,7 @@ const AppHeader = ({ mobileOpened, toggleMobile, desktopOpened, toggleDesktop })
 					<Group
 						ml='xl'
 						gap={15}
-						visibleFrom='sm'
+						visibleFrom='md'
 					>
 						<UnstyledButton>Home</UnstyledButton>
 						<UnstyledButton>Blog</UnstyledButton>
