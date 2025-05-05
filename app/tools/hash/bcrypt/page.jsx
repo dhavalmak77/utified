@@ -110,7 +110,7 @@ export default function Bcrypt() {
 								/> */}
 								<NumberInput
 									value={saltRounds}
-									min={1}
+									min={4}
 									max={31}
 									step={1}
 									onChange={setSaltRounds}
