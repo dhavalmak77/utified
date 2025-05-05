@@ -23,16 +23,12 @@ import {
 import { generateBcryptHash } from '@/app/_lib/utils/bcrypt-hash-generate';
 import { NumberInput } from '@mantine/core';
 
-const HASH = 'Bcrypt';
 const currentTool = 'bcrypt';
 const rows = 5;
 
-const maxQrCodeLength = 2953;
-
 export default function Bcrypt() {
+	const [saltRounds, setSaltRounds] = useState(14);
 	const { inputValue, setInputValue, outputValue, setOutputValue, settings, toggleSettings, autoSync, toggleAutoSync, qrValues, showQRCode, toggleQRCode, loading, setLoading, addToHistory, undo, redo, canUndo, canRedo, error, addError, clearError } = useUtToolsHistory();
-
-	const [saltRounds, setSaltRounds] = useState(10);
 
 	const generateHash = async (data) => {
 		setLoading(true);
