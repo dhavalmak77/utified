@@ -22,7 +22,7 @@ import {
 } from '@/app/_components/common';
 import { blake2s } from '@noble/hashes/blake2s';
 
-const currentTool = 'black2s';
+const currentTool = 'blake2s';
 const rows = 5;
 
 export default function Black2s() {
