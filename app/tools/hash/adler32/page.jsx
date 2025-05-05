@@ -25,7 +25,7 @@ import generatePhpHash from '@/app/_lib/utils/generate-php-hash';
 const currentTool = 'adler32';
 const rows = 5;
 
-export default function Adler32Page() {
+export default function Adler32() {
 	const { debounce } = useDebounce();
 	const { inputValue, setInputValue, outputValue, setOutputValue, settings, toggleSettings, autoSync, toggleAutoSync, qrValues, showQRCode, toggleQRCode, loading, setLoading, addToHistory, undo, redo, canUndo, canRedo, error, addError, clearError } =
 		useUtToolsHistory();
