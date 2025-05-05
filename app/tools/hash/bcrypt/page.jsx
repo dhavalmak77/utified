@@ -27,7 +27,7 @@ const currentTool = 'bcrypt';
 const rows = 5;
 
 export default function Bcrypt() {
-	const [saltRounds, setSaltRounds] = useState(14);
+	const [saltRounds, setSaltRounds] = useState(12);
 	const { inputValue, setInputValue, outputValue, setOutputValue, settings, toggleSettings, autoSync, toggleAutoSync, qrValues, showQRCode, toggleQRCode, loading, setLoading, addToHistory, undo, redo, canUndo, canRedo, error, addError, clearError } = useUtToolsHistory();
 
 	const generateHash = async (data) => {
