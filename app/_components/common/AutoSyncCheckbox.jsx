@@ -7,6 +7,7 @@ const AutoSyncCheckbox = ({ label = 'Auto Sync', checked, onChange, ...props }) 
 			checked={checked}
 			onChange={onChange}
 			{...props}
+			className='select-none'
 		/>
 	);
 };
