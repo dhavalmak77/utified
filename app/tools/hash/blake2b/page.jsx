@@ -22,10 +22,10 @@ import {
 } from '@/app/_components/common';
 import { blake2b } from '@noble/hashes/blake2b';
 
-const currentTool = 'bcrypt';
+const currentTool = 'blake2b';
 const rows = 5;
 
-export default function Bcrypt() {
+export default function Blake2b() {
 	const { inputValue, setInputValue, outputValue, setOutputValue, settings, toggleSettings, autoSync, toggleAutoSync, qrValues, showQRCode, toggleQRCode, loading, setLoading, addToHistory, undo, redo, canUndo, canRedo, error, addError, clearError } =
 		useUtToolsHistory();
 
