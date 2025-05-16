@@ -1,18 +1,35 @@
 import { useState, useCallback, useEffect } from 'react';
 
+const initialAutoSync = { input: false, output: false };
+const initialSettings = { input: false, output: false };
+const initialQrValues = { input: '', output: '' };
+const initialShowQRCode = { input: false, output: false };
 const initialError = { input: '', output: '' };
 
-export function useUtToolsHistory(initialInput = '', initialOutput = '') {
-	const [inputValue, setInputValue] = useState(initialInput);
-	const [outputValue, setOutputValue] = useState(initialOutput);
-	const [autoSync, setAutoSync] = useState({ input: false, output: false });
-	const [settings, setSettings] = useState({ input: false, output: false });
-	const [qrValues, setQrValues] = useState({ input: '', output: '' });
-	const [showQRCode, setShowQRCode] = useState({ input: false, output: false });
-	const [history, setHistory] = useState([]);
-	const [currentIndex, setCurrentIndex] = useState(-1);
-	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState(initialError);
+const initialProps = {
+	inputValue: '',
+	outputValue: '',
+	autoSync: initialAutoSync,
+	settings: initialSettings,
+	qrValues: initialQrValues,
+	showQRCode: initialShowQRCode,
+	history: [],
+	currentIndex: -1,
+	loading: false,
+	error: initialError,
+};
+
+export function useUtToolsHistory(props = initialProps) {
+	const [inputValue, setInputValue] = useState(props.inputValue);
+	const [outputValue, setOutputValue] = useState(props.outputValue);
+	const [autoSync, setAutoSync] = useState(props.autoSync);
+	const [settings, setSettings] = useState(props.settings);
+	const [qrValues, setQrValues] = useState(props.qrValues);
+	const [showQRCode, setShowQRCode] = useState(props.showQRCode);
+	const [history, setHistory] = useState(props.history);
+	const [currentIndex, setCurrentIndex] = useState(props.currentIndex);
+	const [loading, setLoading] = useState(props.loading);
+	const [error, setError] = useState(props.error);
 
 	const addError = ({ type, message }) => {
 		setError((prev) => ({ ...prev, [type]: message }));
@@ -20,7 +37,7 @@ export function useUtToolsHistory(initialInput = '', initialOutput = '') {
 
 	const clearError = () => {
 		setError(initialError);
-	}
+	};
 
 	useEffect(() => {
 		if (showQRCode.input || showQRCode.output) {
@@ -38,7 +55,7 @@ export function useUtToolsHistory(initialInput = '', initialOutput = '') {
 
 	const toggleAutoSync = (type) => {
 		setAutoSync((prev) => ({ ...prev, [type]: !prev[type] }));
-	}
+	};
 
 	const toggleQRCode = (type) => {
 		setShowQRCode((prev) => ({ ...prev, [type]: !prev[type] }));
