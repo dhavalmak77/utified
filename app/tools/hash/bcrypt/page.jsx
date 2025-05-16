@@ -21,7 +21,7 @@ import {
 	UtTextarea,
 } from '@/app/_components/common';
 import { generateBcryptHash } from '@/app/_lib/utils/bcrypt-hash-generate';
-import { NumberInput } from '@mantine/core';
+import { NumberInput, Text } from '@mantine/core';
 
 const currentTool = 'bcrypt';
 const rows = 5;
@@ -29,6 +29,10 @@ const rows = 5;
 export default function Bcrypt() {
 	const [saltRounds, setSaltRounds] = useState(12);
 	const { inputValue, setInputValue, outputValue, setOutputValue, settings, toggleSettings, autoSync, toggleAutoSync, qrValues, showQRCode, toggleQRCode, loading, setLoading, addToHistory, undo, redo, canUndo, canRedo, error, addError, clearError } = useUtToolsHistory();
+	const [focused, setFocused] = useState(false);
+	const floating = focused || !!saltRounds || undefined;
+
+	console.log('focused', focused,  !!saltRounds);
 
 	const generateHash = async (data) => {
 		setLoading(true);
@@ -108,18 +112,30 @@ export default function Bcrypt() {
 									checked={autoSync.input}
 									onChange={(e) => toggleAutoSync('input', e.target.checked)}
 								/> */}
-								<NumberInput
-									value={saltRounds}
-									min={4}
-									max={31}
-									step={1}
-									onChange={setSaltRounds}
-									hideControls
-									leftSection={<div className='pr-2'>Salt Rounds</div>}
-									leftSectionWidth={100}
-									leftSectionProps={{ className: '-mr-2 ml-1 select-none text-black' }}
-									w={129}
-								/>
+								<CommonGroup>
+									{/* <Text>Salt Rounds</Text> */}
+									<NumberInput
+										error={!saltRounds}
+										label='Salt Rounds'
+										className='floating-input input-border-bottom'
+										// labelProps={{ 'data-floating': floating || !saltRounds }}
+										labelProps={{ 'data-floating': floating }}
+										value={saltRounds}
+										onFocus={() => setFocused(true)}
+										onBlur={() => setFocused(false)}
+										min={4}
+										max={31}
+										step={1}
+										onChange={(e) => {
+											// setSaltRounds(e || 12);
+											setSaltRounds(e);
+										}}
+										hideControls
+										bd={0}
+										w={73}
+										// required
+									/>
+								</CommonGroup>
 							</CommonGroup>
 							<CommonGroup>
 								<SettingsButton
