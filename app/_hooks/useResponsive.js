@@ -9,7 +9,7 @@ const BREAKPOINTS = {
 	xl: 1408,
 };
 
-const useResponsive = (mobileBreakpoint = 768, tabletBreakpoint = 1024) => {
+export const useResponsive = (mobileBreakpoint = 768, tabletBreakpoint = 1024) => {
     const xs = useMediaQuery(`(max-width: ${BREAKPOINTS.xs}px)`);
     const sm = useMediaQuery(`(min-width: ${BREAKPOINTS.xs + 1}px) and (max-width: ${BREAKPOINTS.sm}px)`);
     const md = useMediaQuery(`(min-width: ${BREAKPOINTS.sm + 1}px) and (max-width: ${BREAKPOINTS.md}px)`);

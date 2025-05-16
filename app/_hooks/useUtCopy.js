@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 
 const initialCopyStatus = { isSuccess: false, hasError: false };
 
-const useUtCopy = () => {
+export const useUtCopy = () => {
 	const [copyStatus, setCopyStatus] = useState(initialCopyStatus);
 
 	useEffect(() => {
