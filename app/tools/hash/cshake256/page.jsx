@@ -38,7 +38,7 @@ export default function CShake256() {
 			clearError('');
 			addToHistory(data, resultHash);
 		} catch (error) {
-			setError({ type: 'input', message: error.message });
+			addError({ type: 'input', message: error.message });
 		} finally {
 			setLoading(false);
 		}

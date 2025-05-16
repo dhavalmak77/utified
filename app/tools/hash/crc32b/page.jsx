@@ -47,7 +47,7 @@ export default function CRC32b() {
 						throw new Error(resultHash.data || 'Hash generation failed.');
 					}
 				} catch (error) {
-					setError({ type: 'input', message: error.message });
+					addError({ type: 'input', message: error.message });
 				} finally {
 					setLoading(false);
 				}
