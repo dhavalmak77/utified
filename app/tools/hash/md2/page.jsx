@@ -20,7 +20,6 @@ import {
 	UploadFileButton,
 	UtTextarea,
 } from '@/app/_components/common';
-import jsSha3 from 'js-sha3';
 import md2 from 'crypto-api/src/hasher/md2';
 import { toHex } from 'crypto-api/src/encoder/hex';
 
