@@ -70,7 +70,7 @@ export const PageWrapper = ({
 						size='sm'
 						color='dimmed'
 					>
-						© {new Date().getFullYear()} Utified · Built with <span className='text-red-500'>&hearts;</span> and codes.
+						© {new Date().getFullYear()} Utified · Built with <span className='text-red-500 text-base'>&hearts;</span> and codes.
 					</Text>
 				</Box>
 			</AppShell.Main>
