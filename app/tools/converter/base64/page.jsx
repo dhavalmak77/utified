@@ -118,8 +118,8 @@ export default function Base64() {
 
 	return (
 		<PageWrapper
-			title='Base64 Hash Generator'
-			description='Generate Base64 hash.'
+			title='Base64 Encoder/Decoder'
+			description='Encode or decode your text easily with base64.'
 			aside={true}
 		>
 			<ToolBoxWrapper>
