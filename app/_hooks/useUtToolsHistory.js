@@ -19,17 +19,19 @@ const initialProps = {
 	error: initialError,
 };
 
-export function useUtToolsHistory(props = initialProps) {
-	const [inputValue, setInputValue] = useState(props.inputValue);
-	const [outputValue, setOutputValue] = useState(props.outputValue);
-	const [autoSync, setAutoSync] = useState(props.autoSync);
-	const [settings, setSettings] = useState(props.settings);
-	const [qrValues, setQrValues] = useState(props.qrValues);
-	const [showQRCode, setShowQRCode] = useState(props.showQRCode);
-	const [history, setHistory] = useState(props.history);
-	const [currentIndex, setCurrentIndex] = useState(props.currentIndex);
-	const [loading, setLoading] = useState(props.loading);
-	const [error, setError] = useState(props.error);
+export function useUtToolsHistory(props) {
+	const mergedProps = { ...initialProps, ...props };
+
+	const [inputValue, setInputValue] = useState(mergedProps.inputValue);
+	const [outputValue, setOutputValue] = useState(mergedProps.outputValue);
+	const [autoSync, setAutoSync] = useState(mergedProps.autoSync);
+	const [settings, setSettings] = useState(mergedProps.settings);
+	const [qrValues, setQrValues] = useState(mergedProps.qrValues);
+	const [showQRCode, setShowQRCode] = useState(mergedProps.showQRCode);
+	const [history, setHistory] = useState(mergedProps.history);
+	const [currentIndex, setCurrentIndex] = useState(mergedProps.currentIndex);
+	const [loading, setLoading] = useState(mergedProps.loading);
+	const [error, setError] = useState(mergedProps.error);
 
 	const addError = ({ type, message }) => {
 		setError((prev) => ({ ...prev, [type]: message }));
