@@ -1,7 +1,7 @@
 import { Textarea } from '@mantine/core';
 import useUtHovers from '@/app/_hooks/useUtHovers';
-import ClearButton from './ClearButton';
 import cn from '@/app/_lib/utils/cn';
+import InnerClearButton from './InnerClearButton';
 
 const UtTextarea = ({
 	label = 'Label',
@@ -29,7 +29,7 @@ const UtTextarea = ({
 
 	if (clear !== false) {
 		rightSection = (
-			<ClearButton
+			<InnerClearButton
 				value={value}
 				onClick={() => setValue('')}
 			/>

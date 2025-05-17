@@ -3,7 +3,7 @@ import ColumnInputsWrapper from './ColumnInputsWrapper';
 import ColumnSettingsWrapper from './ColumnSettingsWrapper';
 import CommonGroup from './CommonGroup';
 import CopyButton from './CopyButton';
-import ClearButton from './ClearButton';
+import ClearButton from './InnerClearButton';
 import DownloadButton from './DownloadButton';
 import ErrorMessage from './ErrorMessage';
 import QRCode from './QRCode';

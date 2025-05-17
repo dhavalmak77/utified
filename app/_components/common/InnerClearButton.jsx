@@ -1,7 +1,7 @@
 import { ActionIcon, Tooltip } from '@mantine/core';
 import { LuX } from 'react-icons/lu';
 
-export default function ClearButton({ value, onClick, label = 'Clear', size = 16 }) {
+export default function InnerClearButton({ value, onClick, label = 'Clear', size = 16 }) {
     if (!value) {
         return null;
     }
