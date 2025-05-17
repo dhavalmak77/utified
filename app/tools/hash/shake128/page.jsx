@@ -33,7 +33,7 @@ export default function Shake128() {
 		setLoading(true);
 
 		try {
-			const resultHash = jsSha3.shake128(data);
+			const resultHash = jsSha3.shake128(data, 256);
 			setOutputValue(resultHash);
 			clearError();
 			addToHistory(data, resultHash);
