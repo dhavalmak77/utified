@@ -19,13 +19,17 @@ const DownloadButton = ({ data, fileNamePrefix = 'file', fileExtension = 'txt', 
 	}, [data, fileNamePrefix, fileExtension]);
 
 	return (
-		<Tooltip label={tooltipLabel}>
+		<Tooltip
+			label={tooltipLabel}
+			withArrow
+			arrowSize={8}
+		>
 			<Button
 				variant={hovers.download ? 'filled' : 'default'}
 				onClick={handleDownload}
 				disabled={disabled}
 				px={10}
-                {...refs.download}
+				{...refs.download}
 			>
 				<TbDownload size={16} />
 			</Button>

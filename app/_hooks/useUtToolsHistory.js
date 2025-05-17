@@ -41,6 +41,11 @@ export function useUtToolsHistory(props) {
 		setError(initialError);
 	};
 
+	const clearValues = () => {
+		setInputValue(initialProps.inputValue);
+		setOutputValue(initialProps.outputValue);
+	}
+
 	useEffect(() => {
 		if (showQRCode.input || showQRCode.output) {
 			const qrCodeId = setTimeout(() => {
@@ -124,6 +129,7 @@ export function useUtToolsHistory(props) {
 		canRedo: currentIndex < history.length - 1,
 		error,
 		addError,
-		clearError
+		clearError,
+		clearValues
 	};
 }

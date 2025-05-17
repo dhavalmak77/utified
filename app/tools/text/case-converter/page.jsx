@@ -4,10 +4,11 @@ import { PageWrapper } from '@/app/_components/layout/page-wrapper';
 import { useCallback, useEffect, useState } from 'react';
 import { useUtHovers, useUtToolsHistory } from '@/app/_hooks';
 import { ColumnInputsWrapper, ColumnSettingsWrapper, CommonGroup, CopyButton, DownloadButton, QRCode, QRCodeButton, ToolBoxColumnWrapper, ToolBoxWrapper, UploadFileButton, UtTextarea } from '@/app/_components/common';
-import { Button, FileButton, Text, Tooltip } from '@mantine/core';
+import { Button, Text, Tooltip } from '@mantine/core';
 import { LuClipboardCopy } from 'react-icons/lu';
 import cn from '@/app/_lib/utils/cn';
 import { textTranformations, convertTextCase } from './convert-utils';
+import EraseButton from '@/app/_components/common/EraseButton';
 
 const currentTool = 'SHA1';
 const rows = 6;
@@ -17,13 +18,33 @@ const caseButtons = Object.entries(textTranformations).map(([key, el]) => ({ lab
 export default function TextCaseConverter() {
 	const [caseType, setCaseType] = useState('');
 	const { hovers, refs } = useUtHovers(['takeOutputAsInput']);
-	const { inputValue, setInputValue, outputValue, setOutputValue, settings, toggleSettings, autoSync, toggleAutoSync, qrValues, showQRCode, toggleQRCode, loading, setLoading, addToHistory, undo, redo, canUndo, canRedo, error, addError, clearError } =
-		useUtToolsHistory();
+	const {
+		inputValue,
+		setInputValue,
+		outputValue,
+		setOutputValue,
+		settings,
+		toggleSettings,
+		autoSync,
+		toggleAutoSync,
+		qrValues,
+		showQRCode,
+		toggleQRCode,
+		loading,
+		setLoading,
+		addToHistory,
+		undo,
+		redo,
+		canUndo,
+		canRedo,
+		error,
+		addError,
+		clearError,
+		clearValues
+	} = useUtToolsHistory();
 
 	const handleConvert = (caseType, inputText) => {
 		if (!caseType) return;
-
-		console.log(caseType, inputText);
 
 		setCaseType(caseType);
 		const resultText = convertTextCase(caseType, inputText);
@@ -180,6 +201,7 @@ export default function TextCaseConverter() {
 								disabled={!outputValue && !showQRCode.output}
 								iconOnly
 							/>
+							<EraseButton onClick={clearValues} disabled={!inputValue && !outputValue} />
 						</CommonGroup>
 					</CommonGroup>
 				</ToolBoxColumnWrapper>

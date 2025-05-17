@@ -30,7 +30,11 @@ const CopyButton = ({ textToCopy, disabled, label }) => {
 	}, [copyStatus.toggle, textToCopy]);
 
 	return (
-		<Tooltip label={copyStatus.isSuccess ? 'Copied' : copyStatus.hasError ? 'Error copying' : 'Copy'}>
+		<Tooltip
+			label={copyStatus.isSuccess ? 'Copied' : copyStatus.hasError ? 'Error copying' : 'Copy'}
+			withArrow
+			arrowSize={8}
+		>
 			<Button
 				variant={hovers.copy ? 'filled' : 'default'}
 				onClick={handleCopy}
