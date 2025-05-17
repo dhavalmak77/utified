@@ -4,7 +4,7 @@ export const base64Conversions = (conversionType, text, encoding) => {
 	let converted = '';
 
 	try {
-		if (conversionType === 'ENCODE') {
+		if (['input', 'ENCODE'].includes(conversionType)) {
 			const encodedBuffer = iconv.encode(text, encoding);
 			converted = encodedBuffer.toString('base64');
 		} else {
