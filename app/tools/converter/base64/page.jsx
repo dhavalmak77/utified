@@ -23,7 +23,7 @@ import { Select } from '@mantine/core';
 import { CHARSET_OPTIONS } from './charsets';
 import { base64Conversions } from './charset-conversions';
 
-const currentTool = 'SHA1';
+const currentTool = 'Base64';
 const rows = 5;
 
 const defaultOption = {
@@ -31,7 +31,7 @@ const defaultOption = {
 	value: '',
 };
 
-export default function SHA1() {
+export default function Base64() {
 	const [selectedCharset, setSelectedCharset] = useState({ conversionType: '', charset: '', title: '', input: '', output: '' });
 	const { inputValue, setInputValue, outputValue, setOutputValue, settings, toggleSettings, autoSync, toggleAutoSync, qrValues, showQRCode, toggleQRCode, loading, setLoading, addToHistory, undo, redo, canUndo, canRedo, error, addError, clearError } = useUtToolsHistory();
 
