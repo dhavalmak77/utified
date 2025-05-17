@@ -6,7 +6,11 @@ const SettingsButton = ({ label = 'Settings', display, onClick, disabled, size =
 	const { hovers, refs } = useUtHovers(['settings']);
 
 	return (
-		<Tooltip label={label}>
+		<Tooltip
+			label={label}
+			withArrow
+			arrowSize={8}
+		>
 			<Button
 				unstyled
 				onClick={onClick}
