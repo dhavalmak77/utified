@@ -20,15 +20,16 @@ import {
 	UtTextarea,
 } from '@/app/_components/common';
 import Papa from 'papaparse';
-import { Checkbox, NumberInput, Text } from '@mantine/core';
-import cn from '@/app/_lib/utils/cn';
+import { Checkbox } from '@mantine/core';
+import { XMLParser } from 'fast-xml-parser';
 
-const currentTool = 'csv-to-xml';
+const currentTool = 'xml-to-csv';
 const rows = 10;
 
 const initialRemoteFile = { status: false, protocol: 'http://', url: '' };
 
-export default function CsvToXml() {
+export default function XmlToCsv() {
+	const parser = new XMLParser();
 	const [useTabs, setUseTabs] = useState('');
 	const [tabSpace, setTabSpace] = useState(2);
 	const [remoteFile, setRemoteFile] = useState(initialRemoteFile);
@@ -48,95 +49,78 @@ export default function CsvToXml() {
 		}
 	}, [useTabs, tabSpace]);
 
-	// Helper function to sanitize XML tag names
-	const sanitizeTagName = (name) => {
-		// Remove invalid characters and replace spaces with underscores
-		return name.replace(/[^a-zA-Z0-9_-]/g, '_').replace(/^\d/, 'n');
+	// Helper function to flatten nested JSON objects
+	const flattenJson = (obj, prefix = '') => {
+		let result = {};
+		for (let key in obj) {
+			if (obj.hasOwnProperty(key)) {
+				const value = obj[key];
+				const newKey = prefix ? `${prefix}.${key}` : key;
+				if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+					Object.assign(result, flattenJson(value, newKey));
+				} else if (Array.isArray(value)) {
+					result[newKey] = JSON.stringify(value); // Convert arrays to JSON strings
+				} else {
+					result[newKey] = value;
+				}
+			}
+		}
+		return result;
 	};
 
-	// Helper function to format XML with customizable indentation and new lines
-	const formatXml = (xml) => {
-		let formatted = '';
-		let pad = 0;
+	const xmlToCsv = (xmlString) => {
+		// Step 1: Parse the XML into a JavaScript object
+		const options = {
+			ignoreAttributes: false,
+			attributeNamePrefix: '',
+			parseAttributeValue: true,
+		};
 
-		// Determine indentation based on user preference
-		const indent = useTabs ? '\t' : ' '.repeat(tabSpace);
-
-		// Split XML and format with chosen indentation
-		xml.split(/>\s*</).forEach((node) => {
-			if (node.match(/^\/\w/)) pad -= 1;
-			formatted += indent.repeat(pad) + '<' + node + '>\r\n';
-			if (node.match(/^<?\w[^>]*[^/]$/) && !node.startsWith('input')) pad += 1;
-		});
-
-		return formatted.trim();
-	};
-
-	// Handler for CSV to XML conversion
-	const handleConversion = (csvString = false) => {
-		let csvText = inputValue;
-		clearError();
-
-		if (csvString !== false) {
-			csvText = csvString;
-			setInputValue(csvString);
-
-			if (!autoSync) return;
+		let jsonObj;
+		try {
+			jsonObj = parser.parse(xmlString, options);
+		} catch (error) {
+			console.log('error', error);
+			return { error: 'Invalid XML format' };
 		}
 
-		if (!csvText) return;
-
-		// Parse CSV input using PapaParse
-		Papa.parse(csvText, {
-			header: true,
-			skipEmptyLines: true,
-			complete: function (results) {
-				if (results.data.length === 0) {
-					setError('No data to convert.');
-					return;
+		// Step 2: Flatten the JSON object into an array of records
+		const flattenObject = (obj, parent = '', res = {}) => {
+			for (let key in obj) {
+				const propName = parent ? `${parent}_${key}` : key;
+				if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
+					flattenObject(obj[key], propName, res);
+				} else {
+					res[propName] = obj[key];
 				}
+			}
+			return res;
+		};
 
-				const columns = Object.keys(results.data[0]);
+		const records = [];
+		if (Array.isArray(jsonObj)) {
+			jsonObj.forEach((item) => {
+				records.push(flattenObject(item));
+			});
+		} else {
+			records.push(flattenObject(jsonObj));
+		}
 
-				// Create a new XML document fragment
-				const doc = document.implementation.createDocument('', '', null);
-				const root = doc.createElement('root');
+		// Step 3: Convert the records array into CSV format using PapaParse
+		const csv = Papa.unparse(records);
 
-				results.data.forEach((row, rowIndex) => {
-					const item = doc.createElement('item');
+		return { csv };
+	};
 
-					columns.forEach((col) => {
-						const sanitizedCol = sanitizeTagName(col);
-						const element = doc.createElement(sanitizedCol);
-						element.textContent = row[col] != null ? row[col] : ''; // Handle null or undefined values
-						item.appendChild(element);
-					});
+	const handleConversion = () => {
+		clearError();
+		const { csv, error } = xmlToCsv(inputValue);
 
-					root.appendChild(item);
-				});
-
-				doc.appendChild(root);
-
-				// Serialize the XML to a formatted string
-				const serializer = new XMLSerializer();
-				const unformattedXml = serializer.serializeToString(doc);
-
-				// Format the XML with spaces and new lines
-				let formattedXml = formatXml(unformattedXml);
-
-				// Fix for double angle brackets in serialized table
-				formattedXml = formattedXml.replace(/^<<root/, '<root');
-				formattedXml = formattedXml.replace(/<\/root>>$/, '</root>');
-
-				setOutputValue(formattedXml);
-
-				// Adding history for formatted XML table conversion
-				addToHistory(inputValue, formattedXml);
-			},
-			error: function (error) {
-				addError({ type: 'input', message: error.message });
-			},
-		});
+		if (error) {
+			addError({ type: 'input', message: error });
+		} else {
+			setOutputValue(csv);
+		}
 	};
 
 	const handleFileUpload = useCallback(
@@ -156,8 +140,8 @@ export default function CsvToXml() {
 
 	return (
 		<PageWrapper
-			title='CSV to XML Converter'
-			description='Easily convert your CSV data with XML.'
+			title='XML to CSV Converter'
+			description='Easily convert your XML data with CSV.'
 			aside={true}
 		>
 			<ToolBoxWrapper>
@@ -165,11 +149,11 @@ export default function CsvToXml() {
 				<ToolBoxColumnWrapper error={error.input}>
 					<ColumnInputsWrapper error={error.input}>
 						<UtTextarea
-							label='CSV'
-							description='Enter CSV data to convert'
+							label='XML'
+							description='Enter XML data to convert'
 							rows={rows}
 							className={showQRCode.input && qrValues.input?.length ? 'active-qr' : ''}
-							placeholder='Enter CSV data to convert'
+							placeholder='Enter XML data to convert'
 							value={inputValue}
 							setValue={setInputValue}
 							onChange={(e) => {
@@ -227,7 +211,7 @@ export default function CsvToXml() {
 							<CommonGroup>
 								<UploadFileButton
 									onChange={(e) => handleFileUpload('input', e)}
-									accept='.csv'
+									accept='.xml'
 								/>
 							</CommonGroup>
 
@@ -245,11 +229,11 @@ export default function CsvToXml() {
 				<ToolBoxColumnWrapper error={error.output}>
 					<ColumnInputsWrapper error={error.output}>
 						<UtTextarea
-							label='XML'
-							description='Converted XML will appear here'
+							label='CSV'
+							description='Converted CSV will appear here'
 							rows={rows}
 							className={showQRCode.output && qrValues.output?.length ? 'active-qr' : ''}
-							placeholder='Converted XML will appear here'
+							placeholder='Converted CSV will appear here'
 							value={outputValue}
 							setValue={setOutputValue}
 							onChange={(e) => {
@@ -272,34 +256,11 @@ export default function CsvToXml() {
 
 					<CommonGroup justifyBetween>
 						<CommonGroup>
-							<Checkbox
-								label='Use tabs'
-								checked={useTabs}
-								onChange={(e) => setUseTabs(e.target.checked)}
-								style={{ alignSelf: 'center' }}
-							/>
-							<NumberInput
-								value={tabSpace}
-								min={1}
-								max={16}
-								onChange={(value) => setTabSpace((prev) => (!value ? prev : Math.floor(value)))}
-								step={1}
-								className={cn('w-[115px]')}
-								rightSection={
-									<Text
-										size='sm'
-										className={cn('text-right')}
-										// c='black'
-									>
-										Indent size
-									</Text>
-								}
-								rightSectionWidth={70}
-								rightSectionProps={{ style: { margin: 'auto -10px', left: 45 } }}
-								// w={115}
-								miw={95}
-								// variant='transparent'
-								hideControls
+							<UndoRedoButtons
+								onUndo={undo}
+								onRedo={redo}
+								canUndo={canUndo}
+								canRedo={canRedo}
 							/>
 						</CommonGroup>
 						<CommonGroup>
@@ -323,14 +284,7 @@ export default function CsvToXml() {
 						justifyBetween
 						hidden={!settings.output}
 					>
-						<CommonGroup>
-							<UndoRedoButtons
-								onUndo={undo}
-								onRedo={redo}
-								canUndo={canUndo}
-								canRedo={canRedo}
-							/>
-						</CommonGroup>
+						<CommonGroup></CommonGroup>
 						<CommonGroup>
 							<QRCodeButton
 								display={showQRCode.output}

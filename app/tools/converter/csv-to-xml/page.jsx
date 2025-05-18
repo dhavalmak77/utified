@@ -23,12 +23,12 @@ import Papa from 'papaparse';
 import { Checkbox, NumberInput, Text } from '@mantine/core';
 import cn from '@/app/_lib/utils/cn';
 
-const currentTool = 'csv-to-html';
+const currentTool = 'csv-to-xml';
 const rows = 10;
 
 const initialRemoteFile = { status: false, protocol: 'http://', url: '' };
 
-export default function CsvToHtml() {
+export default function CsvToXml() {
 	const [useTabs, setUseTabs] = useState('');
 	const [tabSpace, setTabSpace] = useState(2);
 	const [remoteFile, setRemoteFile] = useState(initialRemoteFile);
