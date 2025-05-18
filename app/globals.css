@@ -75,6 +75,10 @@ textarea::-webkit-scrollbar-thumb:hover {
 	background: #555;
 }
 
+div.mantine-Textarea-root {
+	transition: tab-size 0.5s linear;
+}
+
 /* Custom QR and Textarea style to remove border */
 .active-qr textarea.mantine-Textarea-input {
     border-top-right-radius: 0;

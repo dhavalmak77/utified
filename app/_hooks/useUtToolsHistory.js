@@ -38,7 +38,7 @@ export function useUtToolsHistory(props) {
 	};
 
 	const clearError = () => {
-		setError(initialError);
+		setError(initialProps.error);
 	};
 
 	const clearValues = () => {
