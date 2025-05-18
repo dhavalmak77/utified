@@ -191,12 +191,12 @@ export default function HtmlEntity() {
 								title='Decode'
 								onClick={() => handleConversion('output', outputValue)}
 								loading={loading}
-								disabled={loading || autoSync.input}
+								disabled={loading || autoSync.output}
 							/>
 							<Checkbox
 								label='Auto Decode'
-								checked={autoSync.input}
-								onChange={(e) => toggleAutoSync('input', e.target.checked)}
+								checked={autoSync.output}
+								onChange={(e) => toggleAutoSync('output', e.target.checked)}
 							/>
 						</CommonGroup>
 						<CommonGroup>
