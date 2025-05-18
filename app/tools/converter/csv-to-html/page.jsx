@@ -143,6 +143,9 @@ export default function CsvToHtml() {
 				// Adding history for formatted HTML table conversion
 				addToHistory(inputValue, formattedHtmlTable);
 			},
+			error: function (error) {
+				addError({ type: 'input', message: error.message });
+			},
 		});
 	};
 
