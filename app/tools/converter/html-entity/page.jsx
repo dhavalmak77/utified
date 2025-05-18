@@ -174,7 +174,6 @@ export default function HtmlEntity() {
 								}
 								setOutputValue(e.target.value);
 							}}
-							style={{ tabSize: useTabs ? tabSpace : undefined }}
 							error={error.output}
 						/>
 						{showQRCode.output && (
