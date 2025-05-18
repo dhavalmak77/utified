@@ -28,8 +28,6 @@ const rows = 5;
 const initialRemoteFile = { status: false, protocol: 'http://', url: '' };
 
 export default function HtmlEntity() {
-	const [useTabs, setUseTabs] = useState('');
-	const [tabSpace, setTabSpace] = useState(2);
 	const [remoteFile, setRemoteFile] = useState(initialRemoteFile);
 
 	const { inputValue, setInputValue, outputValue, setOutputValue, settings, toggleSettings, autoSync, toggleAutoSync, qrValues, showQRCode, toggleQRCode, loading, setLoading, addToHistory, undo, redo, canUndo, canRedo, error, addError, clearError } =
