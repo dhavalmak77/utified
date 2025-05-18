@@ -28,22 +28,8 @@ const rows = 5;
 const initialRemoteFile = { status: false, protocol: 'http://', url: '' };
 
 export default function HtmlEntity() {
-	const [remoteFile, setRemoteFile] = useState(initialRemoteFile);
-
 	const { inputValue, setInputValue, outputValue, setOutputValue, settings, toggleSettings, autoSync, toggleAutoSync, qrValues, showQRCode, toggleQRCode, loading, setLoading, addToHistory, undo, redo, canUndo, canRedo, error, addError, clearError } =
 		useUtToolsHistory();
-
-	useEffect(() => {
-		if (autoSync.input) {
-			handleConversion();
-		}
-	}, [inputValue, useTabs, tabSpace, autoSync]);
-
-	useEffect(() => {
-		if (!autoSync.input) {
-			handleConversion();
-		}
-	}, [useTabs, tabSpace]);
 
 	const handleConversion = useCallback((conversionType, inputText) => {
 		clearError();
@@ -69,8 +55,14 @@ export default function HtmlEntity() {
 			reader.onload = (e) => {
 				setInputValue(e.target.result);
 
+				if (type === 'input') {
+					setInputValue(e.target.result);
+				} else {
+					setOutputValue(e.target.result);
+				}
+
 				if (autoSync.input) {
-					handleConversion('input', e.target.result);
+					handleConversion(type, e.target.result);
 				}
 			};
 			reader.readAsText(file);
@@ -98,7 +90,7 @@ export default function HtmlEntity() {
 							setValue={setInputValue}
 							onChange={(e) => {
 								if (autoSync.input) {
-									handleConversion(e.target.value);
+									handleConversion('input', e.target.value);
 								}
 								setInputValue(e.target.value);
 							}}
