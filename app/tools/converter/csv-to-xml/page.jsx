@@ -168,7 +168,7 @@ export default function CsvToHtml() {
 							label='CSV'
 							description='Enter CSV data to convert'
 							rows={rows}
-							className={showQRCode.input && qrValues.input.length ? 'active-qr' : ''}
+							className={showQRCode.input && qrValues.input?.length ? 'active-qr' : ''}
 							placeholder='Enter CSV data to convert'
 							value={inputValue}
 							setValue={setInputValue}
@@ -248,7 +248,7 @@ export default function CsvToHtml() {
 							label='XML'
 							description='Converted XML will appear here'
 							rows={rows}
-							className={showQRCode.output && qrValues.output.length ? 'active-qr' : ''}
+							className={showQRCode.output && qrValues.output?.length ? 'active-qr' : ''}
 							placeholder='Converted XML will appear here'
 							value={outputValue}
 							setValue={setOutputValue}

@@ -74,7 +74,7 @@ export default function Blake2b() {
 							label='Input'
 							description='Enter text to convert'
 							rows={rows}
-							className={showQRCode.input && qrValues.input.length ? 'active-qr' : ''}
+							className={showQRCode.input && qrValues.input?.length ? 'active-qr' : ''}
 							placeholder='Write text or upload a file'
 							value={inputValue}
 							setValue={setInputValue}
@@ -150,7 +150,7 @@ export default function Blake2b() {
 							label='BLAKE2b'
 							description='Converted text will appear here'
 							rows={rows}
-							className={showQRCode.output && qrValues.output.length ? 'active-qr' : ''}
+							className={showQRCode.output && qrValues.output?.length ? 'active-qr' : ''}
 							placeholder='Converted text will appear here'
 							value={outputValue}
 							setValue={setOutputValue}

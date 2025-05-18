@@ -116,7 +116,7 @@ export default function CsvToJson() {
 							label='CSV'
 							description='Enter CSV data to convert'
 							rows={rows}
-							className={showQRCode.input && qrValues.input.length ? 'active-qr' : ''}
+							className={showQRCode.input && qrValues.input?.length ? 'active-qr' : ''}
 							placeholder='Enter CSV data to convert'
 							value={inputValue}
 							setValue={setInputValue}
@@ -196,7 +196,7 @@ export default function CsvToJson() {
 							label='JSON'
 							description='Converted JSON will appear here'
 							rows={rows}
-							className={showQRCode.output && qrValues.output.length ? 'active-qr' : ''}
+							className={showQRCode.output && qrValues.output?.length ? 'active-qr' : ''}
 							placeholder='Converted JSON will appear here'
 							value={outputValue}
 							setValue={setOutputValue}

@@ -73,7 +73,7 @@ export default function SHA384() {
 							label='Input'
 							description='Enter text to convert'
 							rows={rows}
-							className={showQRCode.input && qrValues.input.length ? 'active-qr' : ''}
+							className={showQRCode.input && qrValues.input?.length ? 'active-qr' : ''}
 							placeholder='Write text or upload a file'
 							value={inputValue}
 							setValue={setInputValue}
@@ -149,7 +149,7 @@ export default function SHA384() {
 							label='SHA384'
 							description='Converted text will appear here'
 							rows={rows}
-							className={showQRCode.output && qrValues.output.length ? 'active-qr' : ''}
+							className={showQRCode.output && qrValues.output?.length ? 'active-qr' : ''}
 							placeholder='Converted text will appear here'
 							value={outputValue}
 							setValue={setOutputValue}
