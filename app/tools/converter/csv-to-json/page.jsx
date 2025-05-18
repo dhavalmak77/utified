@@ -36,24 +36,6 @@ export default function CsvToJson() {
 	const { inputValue, setInputValue, outputValue, setOutputValue, settings, toggleSettings, autoSync, toggleAutoSync, qrValues, showQRCode, toggleQRCode, loading, setLoading, addToHistory, undo, redo, canUndo, canRedo, error, addError, clearError } =
 		useUtToolsHistory();
 
-	// Helper function to format HTML with customizable indentation and new lines
-	const formatHtml = (html) => {
-		let formatted = '';
-		let pad = 0;
-
-		// Determine indentation based on user preference
-		const indent = useTabs ? '\t' : ' '.repeat(tabSpace);
-
-		// Split HTML and format with chosen indentation
-		html.split(/>\s*</).forEach((node) => {
-			if (node.match(/^\/\w/)) pad -= 1;
-			formatted += indent.repeat(pad) + '<' + node + '>\r\n';
-			if (node.match(/^<?\w[^>]*[^/]$/) && !node.startsWith('input')) pad += 1;
-		});
-
-		return formatted.trim();
-	};
-
 	useEffect(() => {
 		if (autoSync.input) {
 			handleConversion();
